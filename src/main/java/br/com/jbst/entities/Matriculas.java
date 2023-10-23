@@ -34,9 +34,6 @@ public class Matriculas {
 	@Column(name = "datahoracriacao", nullable = false)
 	private Instant dataHoraCriacao;
 	
-    @Column(name = "numeromatricula", nullable = true)
-    private Integer numeroMatriculas;
-	
 	
 	@Column(name = "venda", length = 100, nullable = true)
 	private String vendas;
@@ -46,10 +43,6 @@ public class Matriculas {
 	
     @Column(name = "numeromatricula", nullable = false)
     private Integer numeroMatricula;
-	
-	
-	@Column(name = "venda", length = 100, nullable = false)
-	private String venda;
 	
 	@Column(name = "status", length = 100, nullable = false)
 	private String status;
