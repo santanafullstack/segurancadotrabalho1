@@ -1,9 +1,12 @@
 package br.com.jbst.services;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.security.auth.login.AccountNotFoundException;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -14,6 +17,7 @@ import br.com.jbst.DTO.GetTurmasDTO;
 import br.com.jbst.DTO.GetTurmasDTOs;
 import br.com.jbst.DTO.PostTurmasDTO;
 import br.com.jbst.DTO.PutTurmasDTO;
+import br.com.jbst.DTO.PutTurmasInstrutor;
 import br.com.jbst.entities.Curso;
 import br.com.jbst.entities.Instrutor;
 import br.com.jbst.entities.Turmas;
@@ -21,6 +25,7 @@ import br.com.jbst.repositories.CursoRepository;
 import br.com.jbst.repositories.InstrutorRepository;
 import br.com.jbst.repositories.TurmasRepository;
 import br.com.jbst.repositories.UnidadeDeTreinamentoRepository;
+import jakarta.transaction.Transactional;
 
 
 
@@ -46,24 +51,11 @@ public class TurmasService {
     
     
     public GetTurmasDTO criarTurmas(PostTurmasDTO dto) throws Exception {
-		
-		List<Instrutor> registro = new ArrayList<Instrutor>();
-		
-		//percorrendo os ids de cada instrutor enviado
-		for(UUID idInstrutor : dto.getIdsInstrutor()) {			
-			//consultando o Instrutor no banco de dados através do id
-			Optional<Instrutor> item = instrutorRepository.findById(idInstrutor);			
-			//verificando se o Instrutor não foi encontrado
-			if(item.isEmpty())
-				throw new IllegalArgumentException("Instrutor inválido: " + idInstrutor);			
-			//adicionando a categoria na lista
-			registro.add(item.get());
-		}
-		
+			
 		//criando uma Turma
 		Turmas turmas = modelMapper.map(dto, Turmas.class);
 		turmas.setIdTurmas(UUID.randomUUID());
-		turmas.setInstrutores(registro);
+    	turmas.setDataHoraCriacao(Instant.now());
 		turmas.setCurso(cursoRepository.findById(dto.getIdCurso()).get());
 		turmas.setUnidadeDeTreinamento(unidadeRepository.findById(dto.getIdUnidadeDeTreinamento()).get());
 		int numeroTurma = gerarNumeroTurma();
@@ -82,47 +74,29 @@ public class TurmasService {
     }
     
  public GetTurmasDTO editarTurmas(PutTurmasDTO dto) throws Exception {
-		
-		List<Instrutor> registro = new ArrayList<Instrutor>();
-		
-		//percorrendo os ids de cada instrutor enviado
-		for(UUID idInstrutor : dto.getIdsInstrutor()) {			
-			//consultando o Instrutor no banco de dados através do id
-			Optional<Instrutor> item = instrutorRepository.findById(idInstrutor);			
-			//verificando se o Instrutor não foi encontrado
-			if(item.isEmpty())
-				throw new IllegalArgumentException("Instrutor inválido: " + idInstrutor);			
-			//adicionando a categoria na lista
-			registro.add(item.get());
-		}
-		
+				
 		UUID id = dto.getIdTurmas();
 		Turmas turmas = turmasRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, turmas );
-		turmas.setInstrutores(registro);
+    	turmas.setDataHoraCriacao(Instant.now());
 		turmas.setCurso(cursoRepository.findById(dto.getIdcurso()).get());
 		turmas.setUnidadeDeTreinamento(unidadeRepository.findById(dto.getIdUnidadedetreinamento()).get());
-
-		//gravando turmas no banco de dados
 		turmasRepository.save(turmas);
-		
-		//copiar os dados de Turmas para o DTO de resposta
-		//e retornar os dados (GetTurmasDTO)
 		return modelMapper.map(turmasRepository.find
 				(turmas.getIdTurmas()), GetTurmasDTO.class);
 	}
     
-public List<GetTurmasDTOs> consultarTurmas(String descricao) throws Exception {
-		
-		//consultando os produtos através do nome no banco de dados
-		List<Turmas> turmas = turmasRepository.findAllByDescricao(descricao);
-		
-		//retornando os dados dos produtos
-		List<GetTurmasDTOs> lista = modelMapper.map(turmas, new TypeToken<List<GetTurmasDTOs>>() {
-		}.getType());
-		return lista;		
+ public List<GetTurmasDTOs> consultarTurmas(String descricao) throws Exception {
+	    List<Turmas> turmas = turmasRepository.findAllTurmas();
+	  	List<GetTurmasDTOs> lista = new ArrayList<>();
+	    for (Turmas turma : turmas) {
+	        GetTurmasDTOs dto = modelMapper.map(turma, GetTurmasDTOs.class);
+	        lista.add(dto);
+	    }
+	    
+	    return lista;
 	}
-	
+
 public GetTurmasDTOs consultarTurmasPorId(UUID id) throws Exception {
 	
 	//consultando o produto através do ID
@@ -152,4 +126,44 @@ public GetTurmasDTOs excluirTurmas(UUID id) throws Exception {
 	return modelMapper.map(turmas, GetTurmasDTOs.class);
 }
 
+
+public GetTurmasDTO incluirInstrutor(PutTurmasInstrutor dto) throws Exception {
+    UUID id = dto.getIdTurmas();
+    Turmas turmas = turmasRepository.findById(id).orElseThrow();
+    modelMapper.map(dto, turmas);
+    turmas.setDataHoraCriacao(Instant.now());
+
+    List<Instrutor> instrutores = new ArrayList<>();
+
+    for (UUID idInstrutor : dto.getIdinstrutores()) {
+        Instrutor instrutor = instrutorRepository.findById(idInstrutor).orElse(null);
+        if (instrutor != null) {
+            instrutores.add(instrutor);
+        }
+    }
+
+    turmas.setInstrutores(instrutores);
+    turmasRepository.save(turmas);
+
+    return modelMapper.map(turmasRepository.find(turmas.getIdTurmas()), GetTurmasDTO.class);
 }
+
+
+@Transactional
+public GetTurmasDTO excluirInstrutor(UUID idTurmas, UUID idInstrutor) throws AccountNotFoundException {
+    Turmas turmas = turmasRepository.findById(idTurmas)
+            .orElseThrow();
+
+    Instrutor instrutor = instrutorRepository.findById(idInstrutor)
+            .orElseThrow(() -> new AccountNotFoundException("Instrutor não encontrado"));
+
+    turmas.getInstrutores().remove(instrutor);
+    turmasRepository.save(turmas);
+
+    return modelMapper.map(turmas, GetTurmasDTO.class);
+}
+
+
+}
+
+

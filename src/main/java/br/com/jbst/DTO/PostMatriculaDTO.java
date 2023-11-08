@@ -1,6 +1,8 @@
 package br.com.jbst.DTO;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+
 
 
 import java.util.UUID;
@@ -15,12 +17,10 @@ public class PostMatriculaDTO {
 	
 	private UUID turmas;
 	private UUID funcionario;
-	private UUID pessoafisica;
 	private UUID faturamento;
-	private UUID pedidos;
-	private Instant dataHoraCriacao;
+	private UUID pessoafisica;
 	private String venda;
-	private String valor;
+	private BigDecimal valor;
 	private String status;
 	
 	

@@ -1,6 +1,5 @@
 package br.com.jbst.services;
 import java.time.Instant;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,11 +67,9 @@ public class FormacaoService {
     public GetFormacaoDTO editarFormacao(PutFormacaoDTO dto) {
         UUID idFormacao = dto.getIdFormacao();
         Formacao formacao = formacaoRepository.findById(idFormacao).orElseThrow();
-
         modelMapper.map(dto, formacao);
-        dto.setDataHoraCriacao(Instant.now());
-
-        UUID idInstrutor = dto.getIdInstrutor();
+        formacao.setDataHoraCriacao(Instant.now());
+        UUID idInstrutor = dto.getIdinstrutor();
         Instrutor instrutor = instrutorRepository.findById(idInstrutor).orElseThrow();
 
         // Defina o instrutor na formacao (assumindo que a propriedade instrutores seja uma lista)

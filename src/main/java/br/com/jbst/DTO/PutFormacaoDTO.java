@@ -8,9 +8,8 @@ import lombok.Data;
 @Data
 public class PutFormacaoDTO {
 
-	private UUID idInstrutor;
+	private UUID idinstrutor;
 	private UUID idFormacao;
-	private Instant dataHoraCriacao;
 	private String formacao;
 	private String conselho;
 	private String registro;

@@ -1,6 +1,7 @@
 package br.com.jbst.DTO;
 
 import java.time.Instant;
+
 import java.util.UUID;
 
 import br.com.jbst.DTOs.GetFuncionarioDTOs;

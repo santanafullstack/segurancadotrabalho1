@@ -7,13 +7,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import br.com.jbst.DTO.GetCursoDTO;
+import br.com.jbst.DTO.GetFuncionarioDTO;
 import br.com.jbst.DTOs.GetEmpresaDTOs;
 import br.com.jbst.DTOs.GetFuncaoDTOs;
 import br.com.jbst.DTOs.GetFuncionarioDTOs;
+import br.com.jbst.entities.Curso;
 import br.com.jbst.entities.map.Empresa;
 import br.com.jbst.entities.map.Funcao;
 import br.com.jbst.entities.map.Funcionario;
@@ -110,7 +114,12 @@ public class FuncionarioService {
 	        // Mapeie outros campos da empresa aqui, se necessário
 	        return empresaDTO;
 	    }
-
+	    public List<GetFuncionarioDTO> consultarTodosFuncionarios(String nome) throws Exception {
+			List<Funcionario> funcionario = funcionarioRepository.findAll();
+			List<GetFuncionarioDTO> lista = modelMapper.map(funcionario, new TypeToken<List<GetFuncionarioDTO>>() {
+			}.getType());
+			return lista;
+		} 
 
 }
 

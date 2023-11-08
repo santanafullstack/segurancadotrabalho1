@@ -34,6 +34,7 @@ public class EnderecoService {
 	    	Endereco endereco = modelMapper.map(dto, Endereco.class);
 	    	endereco.setIdEndereco(UUID.randomUUID());
 	    	endereco.setDataHoraCriacao(Instant.now());
+	    	endereco.setUnidadedetreinamento(unidadeRepository.findById(dto.getIdUnidadedetreinamento()).get());
 	    	enderecoRepository.save(endereco);
 			return modelMapper.map(endereco, GetEnderecoDTO.class);
 			

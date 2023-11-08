@@ -5,6 +5,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.jbst.config.InstantSerializer;
 import lombok.Data;
 
 @Data
@@ -12,6 +15,7 @@ public class GetPedidosDTO {
 
 	
 	private UUID idPedidos;
+	@JsonSerialize(using = InstantSerializer.class)
 	private Instant dataHoraCriacao;
 	private String nomefantasia;
 	private String cnpj;
@@ -20,7 +24,7 @@ public class GetPedidosDTO {
 	private String notafiscal;
 	private String valor;
 	private Integer creditos;
-	private Integer matriculas;
+	private Integer matriculasrealizadas;
     private String comprador;
     private String telefone;
     private String email;

@@ -41,8 +41,9 @@ public class Curso {
 	private String campo_especifico;
 	
 	
-	@OneToMany(mappedBy = "curso") //1 Empresa tem muitos Funcionários
+	@OneToMany(mappedBy = "curso") 
 	private List <Turmas> turmas;
 	
+
 	
 }

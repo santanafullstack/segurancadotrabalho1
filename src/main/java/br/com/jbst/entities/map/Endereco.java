@@ -59,8 +59,8 @@ public class Endereco {
 
     @Column(name = "siafi", length = 100, nullable = true)
     private String siafi;
-   
-    @OneToOne(mappedBy =  "endereco")
-    private UnidadeDeTreinamento unidadeDeTreinamento; 
-    
+       
+    @OneToOne
+    @JoinColumn(name = "id_unidadedetreinamento", nullable = true)
+    private UnidadeDeTreinamento unidadedetreinamento;
 }

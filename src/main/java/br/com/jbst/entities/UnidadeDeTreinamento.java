@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.jbst.entities.map.Contato;
 import br.com.jbst.entities.map.Endereco;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,9 +42,11 @@ public class UnidadeDeTreinamento {
     @OneToMany(mappedBy = "unidadeDeTreinamento")
     private List<Turmas> turmas;
 
-    @OneToOne
-    @JoinColumn(name = "endereco_id", nullable = true)
-    private Endereco endereco;
+    @OneToOne(mappedBy =  "unidadedetreinamento")
+    private Endereco endereco; 
+    
+    @OneToMany(mappedBy = "unidadedetreinamento") //1 Empresa tem muitos contatos
+    private List<Contato> contatos;
 
 }
 

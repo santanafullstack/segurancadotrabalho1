@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jbst.DTO.GetCursoDTO;
+import br.com.jbst.DTO.GetFuncionarioDTO;
 import br.com.jbst.DTOs.GetFuncaoDTOs;
 import br.com.jbst.DTOs.GetFuncionarioDTOs;
 import br.com.jbst.services.FuncionarioService;
@@ -33,6 +34,14 @@ public class FuncionarioControllers {
 		return  ResponseEntity
 				.status(HttpStatus.OK)
 				.body(funcionarioService.consultarFuncionarios());
+	                                 }
+	
+	
+	@RequestMapping("/api/funcionarios/todos")
+	public  ResponseEntity<List<GetFuncionarioDTO>> ConsultarTodosFuncionarios() throws Exception{
+		return  ResponseEntity
+				.status(HttpStatus.OK)
+				.body(funcionarioService.consultarTodosFuncionarios(toString()));
 	                                 }
 
 	@GetMapping("{id}")

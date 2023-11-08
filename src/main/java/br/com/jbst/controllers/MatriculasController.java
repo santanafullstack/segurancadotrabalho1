@@ -22,6 +22,15 @@ import br.com.jbst.DTO.GetPedidosDTO;
 import br.com.jbst.DTO.PostMatriculaDTO;
 import br.com.jbst.DTO.PutCursoDTO;
 import br.com.jbst.DTO.PutMatriculaDTO;
+import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPfDTO;
+import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPjDTO;
+import br.com.jbst.MatriculasDTO.GetMatriculaPedidosDTO;
+import br.com.jbst.MatriculasDTO.PostMatriculaFaturamentoPfDTO;
+import br.com.jbst.MatriculasDTO.PostMatriculaFaturamentoPjDTO;
+import br.com.jbst.MatriculasDTO.PostMatriculaPedidosDTO;
+import br.com.jbst.MatriculasDTO.PutMatriculaFaturamentoPfDTO;
+import br.com.jbst.MatriculasDTO.PutMatriculaFaturamentoPjDTO;
+import br.com.jbst.MatriculasDTO.PutMatriculaPedidosDTO;
 import br.com.jbst.services.MatriculasService;
 
 @RestController
@@ -32,19 +41,43 @@ public class MatriculasController {
 	MatriculasService matriculaService;
 	
 
-
+	//1
+	@PostMapping("/criar-matriculas-faturamento-pj")
+	public ResponseEntity<GetMatriculaFaturamentoPjDTO> criarMatriculaFaturamentoPj( @RequestBody PostMatriculaFaturamentoPjDTO dto) throws Exception {
+	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculasFaturamentoPj( dto));
+	}
 	
-	@PostMapping("/criarMatricula/{idPedidos}")
-	public ResponseEntity<GetMatriculaDTO> criarMatricula(@PathVariable UUID idPedidos, @RequestBody PostMatriculaDTO dto) throws Exception {
-	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculas(idPedidos, dto));
+	//2
+	@PutMapping("/editar-matriculas-faturamento-pj")
+	public ResponseEntity<GetMatriculaFaturamentoPjDTO> editarMatriculas(@RequestBody PutMatriculaFaturamentoPjDTO dto) throws Exception{
+		return ResponseEntity.status(HttpStatus.OK).body(matriculaService.editarMatriculaPj(dto));
+
+	}
+	
+	
+	//3
+	@PostMapping("/criar-matriculas-faturamento-pf")
+	public ResponseEntity<GetMatriculaFaturamentoPfDTO> criarMatriculaFaturamentoPf( @RequestBody PostMatriculaFaturamentoPfDTO dto) throws Exception {
+	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculasFaturamentoPf( dto));
+	}
+	
+	//4
+	@PutMapping("/editar-matriculas-faturamento-pf")
+	public ResponseEntity<GetMatriculaFaturamentoPfDTO> editarMatriculaspf(@RequestBody PutMatriculaFaturamentoPfDTO dto) throws Exception{
+		return ResponseEntity.status(HttpStatus.OK).body(matriculaService.editarMatriculaPf(dto));
+
+	}
+	
+	//5
+	@PostMapping("/criarMatricula-pedidos/{idPedidos}")
+	public ResponseEntity<GetMatriculaPedidosDTO> criarMatricula(@PathVariable UUID idPedidos, @RequestBody PostMatriculaPedidosDTO  dto) throws Exception {
+	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculasPedidos(idPedidos, dto));
 	}
 
-
-
-
-	@PutMapping
-	public ResponseEntity<GetMatriculaDTO> editarMatriculas(@RequestBody PutMatriculaDTO dto) throws Exception{
-		return ResponseEntity.status(HttpStatus.OK).body(matriculaService. editarMatricula(dto));
+	//6
+	@PutMapping("/editarMatricula-pedidos")
+	public ResponseEntity<GetMatriculaPedidosDTO> editarMatriculas(@RequestBody PutMatriculaPedidosDTO dto) throws Exception{
+		return ResponseEntity.status(HttpStatus.OK).body(matriculaService.editarMatriculaPedidos(dto));
 
 	}
 

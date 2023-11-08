@@ -48,8 +48,8 @@ public class Pedidos {
 	@Column(name = "creditos", nullable = false)
 	private Integer creditos;
 	
-	@Column(name = "matriculas", nullable = true)
-	private Integer matriculas;
+	@Column(name = "matriculasrealizadas", nullable = true)
+	private Integer matriculasrealizadas;
 	
 	@Column(name = "comprador", nullable = false)
     private String comprador;

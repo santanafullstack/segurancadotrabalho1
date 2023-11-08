@@ -59,6 +59,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>br.com.jbst</groupId>
+			<artifactId>chamados</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -1,5 +1,6 @@
 package br.com.jbst.DTO;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public class GetMatriculaDTO {
     private Integer numeroMatricula;
 	private Instant dataHoraCriacao;
 	private String venda;
-	private String valor;
+	private BigDecimal valor;
 	private String status;
 	private GetFuncionarioDTOs funcionario;
 	private GetTurmasDTO turmas;

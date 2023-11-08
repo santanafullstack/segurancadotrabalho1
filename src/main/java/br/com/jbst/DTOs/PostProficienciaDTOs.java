@@ -10,7 +10,6 @@ import lombok.Data;
 public class PostProficienciaDTOs {
 
 	private UUID idinstrutor;
-	private Instant dataHoraCriacao;
 	private String proficiencia;
 	private String descricao;	
 

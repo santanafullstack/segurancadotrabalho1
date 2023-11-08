@@ -13,9 +13,9 @@ public interface TurmasRepository extends JpaRepository<Turmas, UUID >{
 
 	@Query(
 			"select t from Turmas t "
-		  + "order by t.descricao"
+
 	)
-	List<Turmas> findAllByDescricao(@Param("descricao") String descricaos);
+	List<Turmas> findAllByDescricao();
 	
 	
 	@Query(
@@ -31,4 +31,9 @@ public interface TurmasRepository extends JpaRepository<Turmas, UUID >{
 	
 	@Query("SELECT MAX(t.numeroTurma) FROM Turmas t")
     Integer findMaxNumeroTurmas();
+	
+	
+
+    @Query("SELECT t FROM Turmas t")
+	List<Turmas> findAllTurmas();
 }

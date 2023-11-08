@@ -35,6 +35,7 @@ public class GetTurmasDTOs {
 	private String descricao;
 	private String diasespecificos;
 	private String tipo;
+	private String nivel;
 	private String validade;
 	private String dia;
 	private String mes;
@@ -42,7 +43,8 @@ public class GetTurmasDTOs {
 	private GetCursoDTO curso;
 	private GetUnidadeDeTreinamentoDTO unidadeDeTreinamento;
 	private List<GetInstrutorDTO> instrutores;
-
 	private List<GetMatriculaTurmDTO> matricula;
+
+
 
 }

@@ -47,7 +47,7 @@ public class ProficienciaService {
 		UUID id = dto.getIdProficiencia();
 		Proficiencia proficiencia = proficienciaRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, proficiencia );
-		dto.setDataHoraCriacao(Instant.now());
+		proficiencia.setDataHoraCriacao(Instant.now());
     	proficiencia.setInstrutores(instrutorRepository.findById(dto.getIdinstrutor()).get());
 		proficienciaRepository.save(proficiencia);
 		return modelMapper.map(proficiencia, GetProficienciaDTOs.class);

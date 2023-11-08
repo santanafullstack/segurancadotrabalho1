@@ -10,7 +10,6 @@ public class PutProficienciaDTOs {
 	
 	private UUID idinstrutor;
 	private UUID idProficiencia;
-	private Instant dataHoraCriacao;
 	private String proficiencia;
 	private String descricao;	
 	private byte[] inserir_proficiencia;

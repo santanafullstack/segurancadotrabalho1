@@ -58,7 +58,7 @@ public class FaturamentoService {
 		UUID id = dto.getIdfaturamento();
 		Faturamento faturamento = faturamentoRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, faturamento );
-		dto.setDataHoraCriacao(Instant.now());
+		faturamento.setDataHoraCriacao(Instant.now());
 		faturamentoRepository.save(faturamento);
 		return modelMapper.map(faturamento, GetFaturamentoDTO.class);
 	}

@@ -11,7 +11,6 @@ import lombok.Data;
 public class PutInstrutorDTO {
 
 	private UUID idinstrutor;
-	private Instant dataHoraCriacao;
 	private String instrutor;
 	private String rg;
 	private String cpf;

@@ -9,8 +9,6 @@ import lombok.Data;
 public class PostUnidadeDeTreinamentoDTO {
 
 
-        private UUID endereco_id;
-	    private Instant dataHoraCriacao;
 	    private String unidadedetreinamento;
 	    private String cnpj;
 	    private String unidade;

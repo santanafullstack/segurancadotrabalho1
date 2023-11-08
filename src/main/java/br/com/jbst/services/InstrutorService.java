@@ -47,7 +47,8 @@ public class InstrutorService {
     	UUID id = dto.getIdinstrutor();
 		Instrutor registro = instrutorRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, registro);
-		dto.setDataHoraCriacao(Instant.now());
+        registro.setDataHoraCriacao(Instant.now());
+
 	    instrutorRepository.save(registro);
 		return modelMapper.map(registro, GetInstrutorDTO.class);
 	}

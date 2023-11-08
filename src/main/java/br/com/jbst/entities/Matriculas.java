@@ -36,7 +36,7 @@ public class Matriculas {
 	
 	
 	@Column(name = "venda", length = 100, nullable = true)
-	private String vendas;
+	private String venda;
 	
 	@Column(name = "valor", length = 100, nullable = true)
 	private BigDecimal valor;
@@ -47,7 +47,7 @@ public class Matriculas {
 	@Column(name = "status", length = 100, nullable = false)
 	private String status;
 	
-	@ManyToOne // muitos funcionários para 1 função
+	@ManyToOne 
 	@JoinColumn(name = "id_turmas", nullable = true) 
 	private Turmas turmas;
 	
@@ -59,15 +59,20 @@ public class Matriculas {
 	@JoinColumn(name = "idPessoaFisica", nullable = true) 
 	private PessoaFisica pessoafisica;
 	
-	@ManyToOne // muitos funcionários para 1 função
+	@ManyToOne
 	@JoinColumn(name = "idfaturamento", nullable = true)
 	private Faturamento faturamento;
 	
-	@ManyToOne // muitos funcionários para 1 função
+	@ManyToOne 
+	@JoinColumn(name = "idfaturamentopf", nullable = true)
+	private FaturamentoPf faturamentopf;
+	
+	
+	@ManyToOne 
 	@JoinColumn(name = "idpedidos", nullable = true) 
 	private Pedidos pedidos;
 
-	 @OneToMany(mappedBy = "matriculas") //1 pessoa fisica tem uma lista de formaçoes
+	 @OneToMany(mappedBy = "matriculas") 
 	private List<Evidencias> evidencias;
 	 
 

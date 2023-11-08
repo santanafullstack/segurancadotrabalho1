@@ -35,7 +35,6 @@ public class UnidadeDeTreinamentoService {
 	    	UnidadeDeTreinamento unidade = modelMapper.map(dto, UnidadeDeTreinamento.class);
 	    	unidade.setIdUnidadedetreinamento(UUID.randomUUID());
 	    	unidade.setDataHoraCriacao(Instant.now());
-	    	unidade.setEndereco(enderecoRepository.findById(dto.getEndereco_id()).get());
 	    	unidadeRepository.save(unidade);
 			return modelMapper.map(unidade, GetUnidadeDeTreinamentoDTO.class);
 			
@@ -45,8 +44,7 @@ public class UnidadeDeTreinamentoService {
 			UUID id = dto.getIdUnidadedetreinamento();
 			UnidadeDeTreinamento unidade = unidadeRepository.findById(id).orElseThrow();
 			modelMapper.map(dto, unidade);
-			dto.setDataHoraCriacao(Instant.now());
-	    	unidade.setEndereco(enderecoRepository.findById(dto.getEndereco_id()).get());
+	    	unidade.setDataHoraCriacao(Instant.now());
 			unidadeRepository.save(unidade);
 			return modelMapper.map(unidade, GetUnidadeDeTreinamentoDTO.class);
 		}

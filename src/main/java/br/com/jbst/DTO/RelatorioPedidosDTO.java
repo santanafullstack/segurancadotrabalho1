@@ -20,7 +20,7 @@ public class RelatorioPedidosDTO {
 	private String notafiscal;
 	private String valor;
 	private Integer creditos;
-	private Integer matriculas;
+	private Integer matriculasrealizadas;
     private String comprador;
     private String telefone;
     private String email;

@@ -55,8 +55,11 @@ public class Instrutor {
 	@OneToMany(mappedBy = "instrutores") //1 pessoa fisica tem uma lista de formaçoes
 	private List<Formacao> formacoes;
 	
+
+	 
 	 @ManyToMany(mappedBy = "instrutores")
 	 private List<Turmas> turmas;
+
 	 
 	 @OneToMany(mappedBy = "instrutores") //1 pessoa fisica tem uma lista de formaçoes
 	private List<Proficiencia> proficiencias;

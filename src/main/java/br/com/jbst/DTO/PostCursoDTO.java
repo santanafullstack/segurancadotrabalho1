@@ -9,12 +9,11 @@ public class PostCursoDTO {
 	
 	private Instant dataHoraCriacao;
 	private String curso;
-	private String tipo;
+	private String status;
 	private String descricao;
 	private String conteudo;
 	private String modelo_certificado;
 	private String campo_especifico;
-	private String status;
 
 
 }

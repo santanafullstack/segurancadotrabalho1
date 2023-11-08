@@ -21,6 +21,7 @@ import br.com.jbst.DTO.GetTurmasDTOs;
 import br.com.jbst.DTO.PostTurmasDTO;
 import br.com.jbst.DTO.PutCursoDTO;
 import br.com.jbst.DTO.PutTurmasDTO;
+import br.com.jbst.DTO.PutTurmasInstrutor;
 import br.com.jbst.services.TurmasService;
 
 @RestController
@@ -57,6 +58,12 @@ public ResponseEntity<GetTurmasDTO> editarTurmas(@RequestBody PutTurmasDTO dto)t
 
 }
 
+@PutMapping("{incluir-instrutor}")
+public ResponseEntity<GetTurmasDTO> editarTurmas(@RequestBody PutTurmasInstrutor dto)throws Exception {
+	return ResponseEntity.status(HttpStatus.OK).body(turmasService.incluirInstrutor(dto));
+
+}
+
 @DeleteMapping("{id}")
 public ResponseEntity<GetTurmasDTOs> ExcluirTurmas(@PathVariable("id") UUID id) throws Exception {
 	return ResponseEntity
@@ -64,4 +71,15 @@ public ResponseEntity<GetTurmasDTOs> ExcluirTurmas(@PathVariable("id") UUID id) 
 			.body(turmasService.excluirTurmas(id));
 
 }
+
+@DeleteMapping("/{idTurmas}/instrutores/{idInstrutor}")
+public ResponseEntity<GetTurmasDTO> excluirInstrutor(
+    @PathVariable UUID idTurmas,
+    @PathVariable UUID idInstrutor
+) throws Exception {
+    GetTurmasDTO turmasDTO = turmasService.excluirInstrutor(idTurmas, idInstrutor);
+    return ResponseEntity.ok(turmasDTO);
 }
+}
+
+

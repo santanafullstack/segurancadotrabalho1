@@ -1,11 +1,7 @@
 package br.com.jbst.entities;
-
 import java.time.Instant;
-
-
 import java.util.List;
 import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -33,12 +29,14 @@ public class Turmas {
 	@Column(name = "datahoracriacao", nullable = false)
 	private Instant dataHoraCriacao;
 	
-	 @Column(name = "numeroturma", nullable = false)
+	@Column(name = "numeroturma", nullable = false)
 	private Integer numeroTurma;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "datainicio", nullable = false)
 	private Instant datainicio;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "datafim", nullable = false)
 	private Instant datafim;
 	
@@ -60,6 +58,9 @@ public class Turmas {
 	@Column(name = "tipo", nullable = false)
 	private String tipo;
 	
+	@Column(name = "nivel", nullable = false)
+	private String nivel;
+	
 	@Column(name = "validade", nullable = false)
 	private String validade;
 	
@@ -73,12 +74,12 @@ public class Turmas {
 	private String ano;
     
     @ManyToOne
-    @JoinColumn(name = "idunidadedetreinamento", referencedColumnName = "idUnidadedetreinamento", nullable = false)
+    @JoinColumn(name = "idunidadedetreinamento", referencedColumnName = "idUnidadedetreinamento", nullable = true)
     private UnidadeDeTreinamento unidadeDeTreinamento;
 	
 	
 	@ManyToOne // muitos contatos  para 1 empresa
-	@JoinColumn(name = "idcurso", nullable = false) // O JoinColumn é para mapeamento de chave estrangeira//
+	@JoinColumn(name = "idcurso", nullable = true) // O JoinColumn é para mapeamento de chave estrangeira//
 	private Curso curso;
     
 	@OneToMany(mappedBy = "turmas") //1 Empresa tem muitos Funcionários
@@ -89,7 +90,7 @@ public class Turmas {
 	    @JoinTable(
 	        name = "turma_instrutor",
 	        joinColumns = @JoinColumn(name = "idturmas"),
-	        inverseJoinColumns = @JoinColumn(name = "idinstrutor")
+	        inverseJoinColumns = @JoinColumn(name = "idinstrutor", nullable = true )
 	    )
 	    private List<Instrutor> instrutores;
 	

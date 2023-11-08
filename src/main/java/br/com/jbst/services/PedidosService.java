@@ -47,7 +47,7 @@ public class PedidosService {
 		UUID id = dto.getIdPedidos();
 		Pedidos pedidos = pedidosRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, pedidos );
-		dto.setDataHoraCriacao(Instant.now());
+    	pedidos.setDataHoraCriacao(Instant.now());
 		pedidosRepository.save(pedidos);
 		return modelMapper.map(pedidos, GetPedidosDTO.class);
 	}

@@ -9,7 +9,6 @@ import lombok.Data;
 public class PostFormacaoDTO {
 	
 	private UUID idinstrutor;
-	private Instant dataHoraCriacao;
 	private String formacao;
 	private String conselho;
 	private String registro;

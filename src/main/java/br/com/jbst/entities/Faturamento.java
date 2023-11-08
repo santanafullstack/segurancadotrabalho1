@@ -36,10 +36,10 @@ public class Faturamento {
 	private String cnpj;
 	
 	@Column(name = "data_inicio", length = 100, nullable = false)
-    private String data_inicio;
+    private Instant data_inicio;
 	
 	@Column(name = "data_fim", length = 100, nullable = false)
-    private String data_fim;
+    private Instant data_fim;
 	
 	@Column(name = "total", length = 100, nullable = true)
 	private BigDecimal total;

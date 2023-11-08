@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class PutUnidadeDeTreinamentoDTO {
 
-    private UUID endereco_id;
     private UUID idUnidadedetreinamento;
     private Instant dataHoraCriacao;
     private String unidadedetreinamento;

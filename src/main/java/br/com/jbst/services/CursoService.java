@@ -38,7 +38,7 @@ public class CursoService {
 		UUID id = dto.getIdcurso();
 		Curso curso = cursoRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, curso );
-		dto.setDataHoraCriacao(Instant.now());
+    	curso.setDataHoraCriacao(Instant.now());
 		cursoRepository.save(curso);
 		return modelMapper.map(curso, GetCursoDTO.class);
 	}
