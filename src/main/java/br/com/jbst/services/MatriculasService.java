@@ -113,42 +113,47 @@ import br.com.jbst.entities.Curso;
 		}	
 			
 		//2
-		public  GetMatriculaFaturamentoPjDTO editarMatriculaPj(PutMatriculaFaturamentoPjDTO dto) throws Exception {
-	
-				Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
-				if (registro.isEmpty())
-					throw new IllegalArgumentException("Matricula' inválida: " + dto.getIdMatricula());
-				Matriculas matriculas = registro.get();
-				matriculas = modelMapper.map(dto, Matriculas.class);
-				matriculas.setDataHoraCriacao(Instant.now());
-				
-			    Optional<Funcionario> funcionario = funcionarioRepository.findById(dto.getFuncionario());
-			    if (funcionario.isPresent()) {
-			        matriculas.setFuncionario(funcionario.get());
-			    } else {
-			        throw new IllegalArgumentException("Funcionário inválido: " + dto.getFuncionario());
-			    }
-			    
-			
-			    
-			    Optional<Turmas> turma = turmasRepository.findById(dto.getTurmas());
-			    if (turma.isPresent()) {
-			        matriculas.setTurmas(turma.get());
-			    } else {
-			        throw new IllegalArgumentException("Turma inválida: " + dto.getTurmas());
-			    }	 
-			    
-			    Optional<Faturamento> faturamento = faturamentoRepository.findById(dto.getFaturamento());
-			    if (faturamento.isPresent()) {
-			        matriculas.setFaturamento(faturamento.get());
-			    } else {
-			        throw new IllegalArgumentException("Faturamento inválido: " + dto.getFaturamento());
-			    }
-			    
-			    matriculasRepository.save(matriculas);
-				return modelMapper.map(matriculas,  GetMatriculaFaturamentoPjDTO.class);
-			}
-			
+		public GetMatriculaFaturamentoPjDTO editarMatriculaPj(PutMatriculaFaturamentoPjDTO dto) throws Exception {
+		    Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
+
+		    if (registro.isEmpty()) {
+		        throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
+		    }
+
+		    Matriculas matriculas = registro.get();
+		    
+		    modelMapper.map(dto, matriculas); // Utiliza o ModelMapper para mapear os dados do DTO para a entidade
+
+		    matriculas.setDataHoraCriacao(Instant.now());
+
+		    Optional<Funcionario> funcionario = funcionarioRepository.findById(dto.getIdFuncionario());
+
+		    if (funcionario.isPresent()) {
+		        matriculas.setFuncionario(funcionario.get());
+		    } else {
+		        throw new IllegalArgumentException("Funcionário inválido: " + dto.getIdFuncionario());
+		    }
+
+		    Optional<Turmas> turma = turmasRepository.findById(dto.getIdTurmas());
+
+		    if (turma.isPresent()) {
+		        matriculas.setTurmas(turma.get());
+		    } else {
+		        throw new IllegalArgumentException("Turma inválida: " + dto.getIdTurmas());
+		    }
+
+		    Optional<Faturamento> faturamento = faturamentoRepository.findById(dto.getIdfaturamento());
+
+		    if (faturamento.isPresent()) {
+		        matriculas.setFaturamento(faturamento.get());
+		    } else {
+		        throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamento());
+		    }
+
+		    matriculasRepository.save(matriculas);
+		    return modelMapper.map(matriculas, GetMatriculaFaturamentoPjDTO.class);
+		}
+
 		//3
 		public GetMatriculaFaturamentoPfDTO criarMatriculasFaturamentoPf( PostMatriculaFaturamentoPfDTO dto) {
 			UUID idMatricula = UUID.randomUUID(); 
@@ -180,40 +185,46 @@ import br.com.jbst.entities.Curso;
 		}	
 			
 		//4
-		public  GetMatriculaFaturamentoPfDTO editarMatriculaPf(PutMatriculaFaturamentoPfDTO dto) throws Exception {
-	
-				Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
-				if (registro.isEmpty())
-					throw new IllegalArgumentException("Matricula' inválida: " + dto.getIdMatricula());
-				Matriculas matriculas = registro.get();
-				matriculas = modelMapper.map(dto, Matriculas.class);
-				matriculas.setDataHoraCriacao(Instant.now());
-				
-	    Optional<PessoaFisica> pessoaFisica = pessoafisicaRepository.findById(dto.getIdpessoafisica());
+		public GetMatriculaFaturamentoPfDTO editarMatriculaPf(PutMatriculaFaturamentoPfDTO dto) throws Exception {
+		    Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
+
+		    if (registro.isEmpty()) {
+		        throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
+		    }
+
+		    Matriculas matriculas = registro.get();
+		    // Atualiza apenas os campos que não são IDs
+		    modelMapper.map(dto, matriculas);
+		    matriculas.setDataHoraCriacao(Instant.now());
+
+		    // Atualiza Pessoa Física
+		    Optional<PessoaFisica> pessoaFisica = pessoafisicaRepository.findById(dto.getIdpessoafisica());
 		    if (pessoaFisica.isPresent()) {
 		        matriculas.setPessoafisica(pessoaFisica.get());
 		    } else {
 		        throw new IllegalArgumentException("Pessoa Física inválida: " + dto.getIdpessoafisica());
 		    }
-			
-			    
-			    Optional<Turmas> turma = turmasRepository.findById(dto.getTurmas());
-			    if (turma.isPresent()) {
-			        matriculas.setTurmas(turma.get());
-			    } else {
-			        throw new IllegalArgumentException("Turma inválida: " + dto.getTurmas());
-			    }	 
-			    
-			    Optional<FaturamentoPf> faturamento = faturamentopfRepository.findById(dto.getIdfaturamentopf());
-			    if (faturamento.isPresent()) {
-			        matriculas.setFaturamentopf(faturamento.get());
-			    } else {
-			        throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamentopf());
-			    }
-			    
-			    matriculasRepository.save(matriculas);
-				return modelMapper.map(matriculas,  GetMatriculaFaturamentoPfDTO.class);
-			}		
+
+		    // Atualiza Turma
+		    Optional<Turmas> turma = turmasRepository.findById(dto.getIdTurmas());
+		    if (turma.isPresent()) {
+		        matriculas.setTurmas(turma.get());
+		    } else {
+		        throw new IllegalArgumentException("Turma inválida: " + dto.getIdTurmas());
+		    }
+
+		    // Atualiza Faturamento
+		    Optional<FaturamentoPf> faturamento = faturamentopfRepository.findById(dto.getIdfaturamentopf());
+		    if (faturamento.isPresent()) {
+		        matriculas.setFaturamentopf(faturamento.get());
+		    } else {
+		        throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamentopf());
+		    }
+
+		    matriculasRepository.save(matriculas);
+		    return modelMapper.map(matriculas, GetMatriculaFaturamentoPfDTO.class);
+		}
+	
 		//5
 		public GetMatriculaPedidosDTO criarMatriculasPedidos(UUID idPedidos, PostMatriculaPedidosDTO dto) {
 				 UUID idMatricula = UUID.randomUUID(); // Gere o idMatricula
@@ -224,7 +235,7 @@ import br.com.jbst.entities.Curso;
 		        matricula.setNumeroMatricula(numeroMatricula);
 			    
 			    
-			    Turmas turma = turmasRepository.findById(dto.getTurmas()).orElse(null); 
+			    Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null); 
 			    if (turma == null) {}
 			    matricula.setTurmas(turma);
 			    
@@ -250,43 +261,59 @@ import br.com.jbst.entities.Curso;
 			    return modelMapper.map(matricula, GetMatriculaPedidosDTO.class);
 			}
 		 //6
-	public GetMatriculaPedidosDTO editarMatriculaPedidos(PutMatriculaPedidosDTO dto) throws Exception {
-		
-					Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
-					if (registro.isEmpty())
-						throw new IllegalArgumentException("Matricula' inválida: " + dto.getIdMatricula());
-					Matriculas matriculas = registro.get();
-					matriculas = modelMapper.map(dto, Matriculas.class);
-					matriculas.setDataHoraCriacao(Instant.now());
-					
-				    Optional<Funcionario> funcionario = funcionarioRepository.findById(dto.getFuncionario());
-				    if (funcionario.isPresent()) {
-				        matriculas.setFuncionario(funcionario.get());
-				    } else {
-				        throw new IllegalArgumentException("Funcionário inválido: " + dto.getFuncionario());
-				    }
-				    
-				
-				    
-				    Optional<Turmas> turma = turmasRepository.findById(dto.getTurmas());
-				    if (turma.isPresent()) {
-				        matriculas.setTurmas(turma.get());
-				    } else {
-				        throw new IllegalArgumentException("Turma inválida: " + dto.getTurmas());
-				    }
-				    
-				    Optional<Pedidos> pedidos = pedidosRepository.findById(dto.getPedidos());
-				    if (pedidos.isPresent()) {
-				        matriculas.setPedidos(pedidos.get());
-				    } else {
-				        throw new IllegalArgumentException("Pedido inválido: " + dto.getPedidos());
-				    }
-				 
-				    
-				    matriculasRepository.save(matriculas);
-					return modelMapper.map(matriculas, GetMatriculaPedidosDTO.class);
-				}
-			  
+		public GetMatriculaPedidosDTO editarMatriculaPedidos(UUID idPedidos, UUID idMatricula, PutMatriculaPedidosDTO dto) {
+		    // Encontrar a matrícula pelo ID
+		    Optional<Matriculas> matriculaOptional = matriculasRepository.findById(idMatricula);
+
+		    if (matriculaOptional.isPresent()) {
+		        Matriculas matricula = matriculaOptional.get();
+
+		        // Atualizar os campos da matrícula com os valores do DTO
+		        modelMapper.map(dto, matricula);
+
+		        // Encontrar a turma pelo ID e definir na matrícula
+		        Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null);
+		        if (turma != null) {
+		            matricula.setTurmas(turma);
+		        } else {
+		            throw new RuntimeException("Turma não encontrada");
+		        }
+
+		        // Encontrar o funcionário pelo ID e definir na matrícula
+		        UUID idFuncionario = dto.getIdFuncionario();
+		        Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElse(null);
+		        if (funcionario != null) {
+		            matricula.setFuncionario(funcionario);
+		        } else {
+		            throw new RuntimeException("Funcionário não encontrado");
+		        }
+
+		        // Encontrar o pedido pelo ID e atualizar os campos
+		        Optional<Pedidos> pedidoOptional = pedidosRepository.findById(idPedidos);
+		        if (pedidoOptional.isPresent()) {
+		            Pedidos pedido = pedidoOptional.get();
+		            Integer creditos = pedido.getCreditos() != null ? pedido.getCreditos() : 0;
+		            Integer matriculasRealizadas = pedido.getMatriculasrealizadas() != null ? pedido.getMatriculasrealizadas() : 0;
+		            creditos--;
+		            matriculasRealizadas++;
+		            pedido.setCreditos(creditos);
+		            pedido.setMatriculasrealizadas(matriculasRealizadas);
+		            matricula.setPedidos(pedido);
+		        } else {
+		            throw new RuntimeException("Pedido não encontrado");
+		        }
+
+		        // Salvar a matrícula atualizada
+		        matriculasRepository.save(matricula);
+
+		        // Retornar a matrícula mapeada para o DTO desejado
+		        return modelMapper.map(matricula, GetMatriculaPedidosDTO.class);
+		    } else {
+		        throw new RuntimeException("Matrícula não encontrada");
+		    }
+		}
+
+
 		  public List<GetMatriculaDTO> consultarMatriculas(String numeroMatricula) throws Exception {
 				List<Matriculas> matriculas = matriculasRepository.findAllMatriculas();
 				List<GetMatriculaDTO> lista = modelMapper.map(matriculas, new TypeToken<List<GetMatriculaDTO>>() {
@@ -313,7 +340,8 @@ import br.com.jbst.entities.Curso;
 			        }
 			        return ultimoNumero + 1;
 			    }
-		  
-	
-		    
+		  		  
+			  			  
+			
+
 		}

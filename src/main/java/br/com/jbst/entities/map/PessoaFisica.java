@@ -52,5 +52,7 @@ public class PessoaFisica {
 	@OneToMany(mappedBy = "pessoafisica") 
 	private List<Matriculas> matriculas;
 	
-
+	 public UUID getId() {
+	        return idpessoafisica;
+	    }
 }

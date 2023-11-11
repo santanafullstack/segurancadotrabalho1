@@ -29,6 +29,10 @@ public interface MatriculasRepository extends JpaRepository<Matriculas, UUID > {
       + "LEFT JOIN m.funcionario f\n"		 
 	)
 	List<Matriculas> findAllMatricula();
+
+    List<Matriculas> findByPessoafisica_Id(UUID idPessoaFisica);
+    List<Matriculas> findByFaturamento_Id(UUID idFaturamento);
+
 }
 
 

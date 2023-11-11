@@ -13,4 +13,5 @@ public class PostMatriculaFaturamentoPjDTO {
 	private String venda;
 	private BigDecimal valor;
 	private String status;
+	private String tipo_de_pagamento;
 }

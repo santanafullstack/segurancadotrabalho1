@@ -63,6 +63,8 @@ public class FaturamentoPf {
 
 	    this.total = totalValue;
 	}
+	
+	
 	}
 
 

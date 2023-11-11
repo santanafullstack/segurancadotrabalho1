@@ -1,12 +1,13 @@
 package br.com.jbst.controllers;
 
 import java.util.List;
-
 import java.util.UUID;
 
+import org.hibernate.boot.MappingNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,14 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTO.GetMatriculaDTO;
-import br.com.jbst.DTO.GetPedidosDTO;
-import br.com.jbst.DTO.PostMatriculaDTO;
-import br.com.jbst.DTO.PutCursoDTO;
-import br.com.jbst.DTO.PutMatriculaDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPjDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaPedidosDTO;
@@ -35,6 +33,7 @@ import br.com.jbst.services.MatriculasService;
 
 @RestController
 @RequestMapping (value = "/api/matriculas")
+@CrossOrigin(origins = "http://localhost:4200", methods = {RequestMethod.PUT, RequestMethod.OPTIONS})
 public class MatriculasController {
 	
 	@Autowired
@@ -74,12 +73,24 @@ public class MatriculasController {
 	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculasPedidos(idPedidos, dto));
 	}
 
-	//6
-	@PutMapping("/editarMatricula-pedidos")
-	public ResponseEntity<GetMatriculaPedidosDTO> editarMatriculas(@RequestBody PutMatriculaPedidosDTO dto) throws Exception{
-		return ResponseEntity.status(HttpStatus.OK).body(matriculaService.editarMatriculaPedidos(dto));
+    @PutMapping("/editarMatricula-pedidos/{idPedidos}")
+    public ResponseEntity<GetMatriculaPedidosDTO> editarMatriculaPedidos(
+            @PathVariable UUID idPedidos,
+            @RequestParam UUID idMatricula,
+            @RequestBody PutMatriculaPedidosDTO dto
+    ) {
+        try {
+            GetMatriculaPedidosDTO resultado = matriculaService.editarMatriculaPedidos(idPedidos, idMatricula, dto);
+            return ResponseEntity.ok(resultado);
+        } catch (MappingNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
-	}
+
+
 
 	@GetMapping
 	public  ResponseEntity<List<GetMatriculaDTO>> ConsultarMatriculas() throws Exception{
@@ -87,6 +98,8 @@ public class MatriculasController {
 				.status(HttpStatus.OK)
 				.body(matriculaService.consultarMatriculas(toString()));
 	                                 }
+	 
+	
 	@GetMapping("{id}")
 	public  ResponseEntity<GetMatriculaDTO> consultarUmaMatricula(@PathVariable("id") UUID id){
 		return ResponseEntity.status(HttpStatus.OK).body(matriculaService.consultarUmaMatricula(id));

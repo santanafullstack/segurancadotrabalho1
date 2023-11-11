@@ -58,6 +58,9 @@ public class Faturamento {
 
 	    this.total = totalValue;
 	}
+	  public UUID getId() {
+	        return idfaturamento;
+	    }
 	}
 
 

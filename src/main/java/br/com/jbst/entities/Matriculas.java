@@ -47,6 +47,9 @@ public class Matriculas {
 	@Column(name = "status", length = 100, nullable = false)
 	private String status;
 	
+	@Column(name = "tipo_de_pagamento", length = 100, nullable = false)
+	private String tipo_de_pagamento;
+	
 	@ManyToOne 
 	@JoinColumn(name = "id_turmas", nullable = true) 
 	private Turmas turmas;
