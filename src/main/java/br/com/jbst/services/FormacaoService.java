@@ -1,7 +1,5 @@
 package br.com.jbst.services;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.jbst.DTO.GetFormacaoDTO;
-import br.com.jbst.DTO.GetInstrutorDTO;
 import br.com.jbst.DTO.PostFormacaoDTO;
 import br.com.jbst.DTO.PutFormacaoDTO;
 import br.com.jbst.entities.Instrutor;

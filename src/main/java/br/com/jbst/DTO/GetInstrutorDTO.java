@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import br.com.jbst.DTOs.GetProficienciaDTOs;
-import br.com.jbst.entities.map.Formacao;
 import lombok.Data;
 
 @Data

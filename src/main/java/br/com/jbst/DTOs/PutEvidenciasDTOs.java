@@ -10,7 +10,6 @@ public class PutEvidenciasDTOs {
 
 	private UUID idMatricula;
 	private UUID idEvidencias;
-	private Instant dataHoraCriacao;
 	private String evidencias;
 	private String descricao;	
 	private byte[] inserir_evidencias;

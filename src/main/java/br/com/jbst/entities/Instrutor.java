@@ -1,7 +1,7 @@
  package br.com.jbst.entities;
 import java.time.Instant;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import br.com.jbst.entities.map.Formacao;
 import jakarta.persistence.Column;

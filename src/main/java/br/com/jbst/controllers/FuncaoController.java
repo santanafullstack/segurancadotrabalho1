@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jbst.DTOs.GetFuncaoDTOs;
-import br.com.jbst.DTOs.GetFuncionarioDTOs;
 import br.com.jbst.services.FuncaoService;
-import br.com.jbst.services.FuncionarioService;
 
 @RestController
 @RequestMapping(value = "/api/funcao")

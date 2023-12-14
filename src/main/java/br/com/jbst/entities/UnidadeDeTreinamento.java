@@ -1,6 +1,7 @@
 package br.com.jbst.entities;
 
 import java.time.Instant;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -9,7 +10,6 @@ import br.com.jbst.entities.map.Endereco;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;

@@ -3,13 +3,13 @@ package br.com.jbst.services;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,6 @@ import br.com.jbst.DTO.GetTurmasDTOs;
 import br.com.jbst.DTO.PostTurmasDTO;
 import br.com.jbst.DTO.PutTurmasDTO;
 import br.com.jbst.DTO.PutTurmasInstrutor;
-import br.com.jbst.entities.Curso;
 import br.com.jbst.entities.Instrutor;
 import br.com.jbst.entities.Turmas;
 import br.com.jbst.repositories.CursoRepository;
@@ -128,24 +127,33 @@ public GetTurmasDTOs excluirTurmas(UUID id) throws Exception {
 
 
 public GetTurmasDTO incluirInstrutor(PutTurmasInstrutor dto) throws Exception {
-    UUID id = dto.getIdTurmas();
-    Turmas turmas = turmasRepository.findById(id).orElseThrow();
-    modelMapper.map(dto, turmas);
-    turmas.setDataHoraCriacao(Instant.now());
+    try {
+        UUID id = dto.getIdTurmas();
+        Turmas turmas = turmasRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Turmas não encontrada com o ID: " + id));
 
-    List<Instrutor> instrutores = new ArrayList<>();
+        modelMapper.map(dto, turmas);
+        turmas.setDataHoraCriacao(Instant.now());
 
-    for (UUID idInstrutor : dto.getIdinstrutores()) {
-        Instrutor instrutor = instrutorRepository.findById(idInstrutor).orElse(null);
-        if (instrutor != null) {
-            instrutores.add(instrutor);
+        List<Instrutor> instrutores = new ArrayList<>();
+
+        if (dto.getIdinstrutor() != null && !dto.getIdinstrutor().isEmpty()) {
+            for (UUID idInstrutor : dto.getIdinstrutor()) {
+                Instrutor instrutor = instrutorRepository.findById(idInstrutor)
+                        .orElseThrow(() -> new NoSuchElementException("Instrutor não encontrado com o ID: " + idInstrutor));
+
+                instrutores.add(instrutor);
+            }
         }
+
+        turmas.setInstrutores(instrutores);
+        turmasRepository.save(turmas);
+
+        return modelMapper.map(turmas, GetTurmasDTO.class);
+    } catch (Exception ex) {
+        // Trate a exceção de forma apropriada, registre logs, etc.
+        throw new Exception("Erro ao incluir instrutores na turma.", ex);
     }
-
-    turmas.setInstrutores(instrutores);
-    turmasRepository.save(turmas);
-
-    return modelMapper.map(turmasRepository.find(turmas.getIdTurmas()), GetTurmasDTO.class);
 }
 
 

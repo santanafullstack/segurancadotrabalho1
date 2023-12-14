@@ -9,7 +9,7 @@ import lombok.Data;
 public class GetFuncionarioDTOs {
 
 	private UUID idFuncionario;
-	private Instant dataHoraCriacao;
+	private Instant DataHoraCriacao;
 	private String nome;
 	private String cpf;
 	private String rg;

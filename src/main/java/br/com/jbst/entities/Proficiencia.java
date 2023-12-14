@@ -1,7 +1,6 @@
 package br.com.jbst.entities;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Column;

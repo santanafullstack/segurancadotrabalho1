@@ -21,6 +21,5 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.setUseTrailingSlashMatch(false);
     }
 }

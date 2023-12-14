@@ -28,8 +28,11 @@ public class Curso {
 	@Column(name = "curso", length = 500, nullable = false)
 	private String curso;
 	
-	@Column(name = "status", length = 100, nullable = true)
-	private String status;
+	@Column(name = "codigo", nullable = false)
+	 private Integer codigo;
+	
+	@Column(name = "descricao", length = 500, nullable = true)
+	private String descricao;
 	
 	@Column(name = "conteudo", length = 5000, nullable = true)
 	private String conteudo;
@@ -40,9 +43,30 @@ public class Curso {
 	@Column(name = "campo_especifico", length = 100, nullable = true)
 	private String campo_especifico;
 	
+	@Column(name = "tituloautorizacao", length = 200, nullable = true)
+	private String tituloautorizacao;
+	
+	@Column(name = "itemdaautorizacao", length = 200, nullable = true)
+	private String itemdaautorizacao;
+	
+	@Column(name = "conteudodaautorizacao", length = 5000, nullable = true)
+	private String conteudodaautorizacao;
+	
+	@Column(name = "conformidade", length = 1000, nullable = true)
+	private String conformidade;
+	
+	@Column(name = "avaliacao", nullable = true)
+	private byte[] avaliacao;
+	
+	@Column(name = "gabarito", nullable = true)
+	private byte[] gabarito;
+	
+	@Column(name = "material", nullable = true)
+	private byte[] material;
 	
 	@OneToMany(mappedBy = "curso") 
 	private List <Turmas> turmas;
+
 	
 
 	

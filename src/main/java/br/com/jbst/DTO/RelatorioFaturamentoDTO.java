@@ -12,6 +12,7 @@ import lombok.Data;
 public class RelatorioFaturamentoDTO {
 	private UUID idfaturamento;
 	private Instant dataHoraCriacao;
+	private Integer numeroFaturamento;
 	private String empresa;
 	private String cnpj;
     private String data_inicio;

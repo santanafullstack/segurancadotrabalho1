@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class PostMatriculaFaturamentoPfDTO {
 	private UUID idTurmas;
+	private UUID usuario;
 	private UUID idpessoafisica;
 	private UUID idfaturamentopf;
 	private String venda;

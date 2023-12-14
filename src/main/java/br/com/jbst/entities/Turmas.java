@@ -1,5 +1,6 @@
 package br.com.jbst.entities;
 import java.time.Instant;
+
 import java.util.List;
 import java.util.UUID;
 import jakarta.persistence.Column;
@@ -26,52 +27,67 @@ public class Turmas {
 	private UUID idTurmas;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "datahoracriacao", nullable = false)
+	@Column(name = "datahoracriacao", nullable = true)
 	private Instant dataHoraCriacao;
 	
-	@Column(name = "numeroturma", nullable = false)
+	@Column(name = "numeroturma", nullable = true)
 	private Integer numeroTurma;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "datainicio", nullable = false)
+	@Column(name = "datainicio", nullable = true)
 	private Instant datainicio;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "datafim", nullable = false)
+	@Column(name = "datafim", nullable = true)
 	private Instant datafim;
 	
-	@Column(name = "cargahoraria", nullable = false)
+	@Column(name = "cargahoraria", nullable = true)
 	private String  cargahoraria;
 	
-	@Column(name = "modalidade", nullable = false)
+	@Column(name = "modalidade", nullable = true)
 	private String modalidade;
 	
-	@Column(name = "status", nullable = false)
+	@Column(name = "status", nullable = true)
 	private String status;
 	
-	@Column(name = "descricao", nullable = false)
+	@Column(name = "descricao", nullable = true)
 	private String descricao;
 	
-	@Column(name = "diasespecificos", nullable = false)
+	@Column(name = "diasespecificos", nullable = true)
 	private String diasespecificos;
 	
-	@Column(name = "tipo", nullable = false)
+	@Column(name = "tipo", nullable = true)
 	private String tipo;
 	
-	@Column(name = "nivel", nullable = false)
+	@Column(name = "nivel", nullable = true)
 	private String nivel;
 	
-	@Column(name = "validade", nullable = false)
+	@Column(name = "validade", nullable = true)
 	private String validade;
 	
-	@Column(name = "dia", nullable = false)
+	@Column(name = "dia", nullable = true)
 	private String dia;
 	
-	@Column(name = "mes", nullable = false)
+	@Column(name = "mes", nullable = true)
 	private String mes;
 	
-	@Column(name = "ano", nullable = false)
+	@Column(name = "ano", nullable = true)
 	private String ano;
+	
+	@Column(name = "primeirodia", nullable = true)
+	private String primeirodia;
+
+	@Column(name = "segundodia", nullable = true)
+	private String segundodia;
+
+	@Column(name = "terceirodia", nullable = true)
+	private String terceirodia;
+
+	@Column(name = "quartodia", nullable = true)
+	private String quartodia;
+
+	@Column(name = "quintodia", nullable = true)
+	private String quintodia;
     
     @ManyToOne
     @JoinColumn(name = "idunidadedetreinamento", referencedColumnName = "idUnidadedetreinamento", nullable = true)

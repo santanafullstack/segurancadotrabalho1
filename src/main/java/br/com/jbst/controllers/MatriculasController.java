@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jbst.DTO.GetMatriculaDTO;
+import br.com.jbst.MatriculasDTO.AdicionarUsuariosMatriculaDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPjDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaPedidosDTO;
@@ -111,4 +112,10 @@ public class MatriculasController {
 	public void ExcluirMatricula(@PathVariable UUID id) {
 
 	}
+	
+	  @PostMapping("/adicionar-usuarios")
+	    public ResponseEntity<GetMatriculaFaturamentoPjDTO> adicionarUsuariosMatricula(@RequestBody AdicionarUsuariosMatriculaDTO dto) {
+	        GetMatriculaFaturamentoPjDTO result = matriculaService.adicionarUsuariosMatricula(dto);
+	        return new ResponseEntity<>(result, HttpStatus.OK);
+	    }
 }

@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import br.com.jbst.DTO.GetMatriculaDTO;
 import br.com.jbst.DTO.RelatorioMatriculaDTO;
 import br.com.jbst.config.InstantSerializer;
 import lombok.Data;

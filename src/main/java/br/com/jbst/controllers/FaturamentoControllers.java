@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jbst.DTO.PutCursoDTO;
 import br.com.jbst.DTO.RelatorioFaturamentoDTO;
-import br.com.jbst.DTO.RelatorioPedidosDTO;
 import br.com.jbst.DTOs.GetFaturamentoDTO;
 import br.com.jbst.DTOs.PostFaturamentoDTO;
 import br.com.jbst.DTOs.PutFaturamentoDTO;

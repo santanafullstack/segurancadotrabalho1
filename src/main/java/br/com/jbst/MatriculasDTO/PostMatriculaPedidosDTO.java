@@ -9,6 +9,7 @@ import lombok.Data;
 public class PostMatriculaPedidosDTO {
 
 	private UUID idTurmas;
+	private UUID usuario;
 	private UUID funcionario;
 	private UUID idPedidos;
 	private String venda;

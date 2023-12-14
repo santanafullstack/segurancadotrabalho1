@@ -18,15 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.jbst.DTO.GetFormacaoDTO;
 import br.com.jbst.DTO.GetInstrutorDTO;
 import br.com.jbst.DTO.GetInstrutorDTOs;
-import br.com.jbst.DTO.GetUnidadeDeTreinamentoDTO;
-import br.com.jbst.DTO.PostFormacaoDTO;
 import br.com.jbst.DTO.PostInstrutorDTO;
-import br.com.jbst.DTO.PutFormacaoDTO;
 import br.com.jbst.DTO.PutInstrutorDTO;
-import br.com.jbst.services.FormacaoService;
 import br.com.jbst.services.InstrutorService;
 
 @RestController
@@ -63,8 +58,10 @@ public class InstrutorController {
 	}
 	
 	@PutMapping(value = "incluir-assinatura", consumes = { "multipart/form-data" })
-	public ResponseEntity<GetInstrutorDTOs> IncluirAssinatura(@RequestParam("id") UUID id,
-			@RequestParam("assinatura") MultipartFile assinatura) throws Exception {
+	public ResponseEntity<GetInstrutorDTOs> IncluirAssinatura(
+			@RequestParam("id") UUID id,
+			  @RequestParam("assinatura") MultipartFile assinatura
+			) throws Exception {
 
 		// capturando o tipo do arquivo
 		String tipo = assinatura.getContentType();

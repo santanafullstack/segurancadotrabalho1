@@ -15,15 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jbst.DTO.RelatorioFaturamentoDTO;
 import br.com.jbst.DTO.RelatorioFaturamentoPfDto;
-import br.com.jbst.DTOs.GetFaturamentoDTO;
 import br.com.jbst.DTOs.GetFaturamentopfDto;
-import br.com.jbst.DTOs.PostFaturamentoDTO;
 import br.com.jbst.DTOs.PostFaturamentopfDto;
-import br.com.jbst.DTOs.PutFaturamentoDTO;
 import br.com.jbst.DTOs.PutFaturamentopfDto;
-import br.com.jbst.services.FaturamentoService;
 import br.com.jbst.services.FaturamentopfServices;
 
 @RestController

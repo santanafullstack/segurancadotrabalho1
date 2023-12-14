@@ -14,6 +14,9 @@ public class PostCursoDTO {
 	private String conteudo;
 	private String modelo_certificado;
 	private String campo_especifico;
-
+	private String tituloautorizacao;
+	private String itemdaautorizacao;
+	private String conteudodaautorizacao;
+	private String conformidade;
 
 }

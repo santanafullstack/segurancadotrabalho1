@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import br.com.jbst.entities.Instrutor;
 import br.com.jbst.entities.map.Formacao;
 
 public interface FormacaoRepository extends JpaRepository<Formacao, UUID > {

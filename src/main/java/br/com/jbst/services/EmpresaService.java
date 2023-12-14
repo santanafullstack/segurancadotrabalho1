@@ -9,9 +9,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTOs.GetEmpresaDTOs;
-import br.com.jbst.entities.Curso;
 import br.com.jbst.entities.map.Empresa;
 import br.com.jbst.repositories.EmpresaRepository;
 

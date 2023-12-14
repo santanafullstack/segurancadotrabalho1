@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.jbst.DTOs.GetEvidenciasDTOs;
-import br.com.jbst.DTOs.GetProficienciaDTOs;
 import br.com.jbst.DTOs.PostEvidenciasDTOs;
 import br.com.jbst.DTOs.PutEvidenciasDTOs;
 import br.com.jbst.services.EvidenciasServices;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping(value = "/api/evidencias")
@@ -59,7 +59,7 @@ public class EvidenciasController {
 	
 	@PutMapping(value = "incluir-evidencia", consumes = { "multipart/form-data" })
 	public ResponseEntity<GetEvidenciasDTOs> IncluirEvidencias(@RequestParam("id") UUID id,
-			@RequestParam("incluirevidencias") MultipartFile incluirevidencias) throws Exception {
+			@RequestParam("inserir_evidencias") MultipartFile incluirevidencias) throws Exception {
 
 		// capturando o tipo do arquivo
 		String tipo = incluirevidencias.getContentType();
@@ -83,4 +83,43 @@ public class EvidenciasController {
 					.body(evidenciasServices.excluirEvidencias(id));
 
 	}
+	
+
+@GetMapping("/download-evidencia/{evidencia}")
+public ResponseEntity<byte[]> downloadEvidencia(@PathVariable UUID evidencia) {
+    try {
+        // Substitua o método getEvidenciasDTOs para obter os dados do arquivo com base no tipo
+        byte[] arquivoBytes = evidenciasServices.getEvidenciasDTOs(evidencia);
+
+        // Obter o tipo de mídia do arquivo (por exemplo, JPEG, PNG)
+        MediaType mediaType = getMediaTypeForFileName("example.jpg");
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(mediaType)
+                .body(arquivoBytes);
+    } catch (Exception e) {
+        // Lidar com exceções, por exemplo, evidência não encontrada ou dados vazios
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+}
+
+private MediaType getMediaTypeForFileName(String fileName) {
+    // Obter o tipo de mídia com base na extensão do arquivo
+    String extensao = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+    switch (extensao) {
+        case "jpg":
+        case "jpeg":
+            return MediaType.IMAGE_JPEG;
+        case "png":
+            return MediaType.IMAGE_PNG;
+        // Adicione mais casos conforme necessário para outros tipos de arquivo
+        default:
+            // Se o tipo de arquivo não for suportado, você pode retornar MediaType.APPLICATION_OCTET_STREAM
+            return MediaType.APPLICATION_OCTET_STREAM;
+    }
+}
+
+
 }

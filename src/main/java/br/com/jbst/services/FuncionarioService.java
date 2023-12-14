@@ -12,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTO.GetFuncionarioDTO;
 import br.com.jbst.DTOs.GetEmpresaDTOs;
 import br.com.jbst.DTOs.GetFuncaoDTOs;
 import br.com.jbst.DTOs.GetFuncionarioDTOs;
-import br.com.jbst.entities.Curso;
 import br.com.jbst.entities.map.Empresa;
 import br.com.jbst.entities.map.Funcao;
 import br.com.jbst.entities.map.Funcionario;

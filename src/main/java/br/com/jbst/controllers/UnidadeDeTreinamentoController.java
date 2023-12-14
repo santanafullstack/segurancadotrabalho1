@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTO.GetUnidadeDeTreinamentoDTO;
-import br.com.jbst.DTO.PostCursoDTO;
 import br.com.jbst.DTO.PostUnidadeDeTreinamentoDTO;
-import br.com.jbst.DTO.PutCursoDTO;
 import br.com.jbst.DTO.PutUnidadeDeTreinamentoDTO;
 import br.com.jbst.services.UnidadeDeTreinamentoService;
 

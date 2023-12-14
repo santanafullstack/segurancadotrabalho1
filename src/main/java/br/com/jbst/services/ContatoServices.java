@@ -1,7 +1,6 @@
 package br.com.jbst.services;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,12 +8,9 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.jbst.entities.Curso;
 import br.com.jbst.entities.map.Contato;
-import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTOs.GetContatoDTOs;
 import br.com.jbst.DTOs.PostContatoDTOs;
 import br.com.jbst.DTOs.PutContatoDTOs;

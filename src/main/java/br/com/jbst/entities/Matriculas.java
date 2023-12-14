@@ -1,4 +1,5 @@
 package br.com.jbst.entities;
+import java.util.ArrayList;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -7,6 +8,7 @@ import java.util.UUID;
 
 import br.com.jbst.entities.map.Funcionario;
 import br.com.jbst.entities.map.PessoaFisica;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -79,7 +81,9 @@ public class Matriculas {
 	private List<Evidencias> evidencias;
 	 
 
-		    
-		}
+	  
+	 @OneToMany(mappedBy = "matricula", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<MatriculasUsuarios> matriculasUsuarios = new ArrayList<>();
+}
 
 

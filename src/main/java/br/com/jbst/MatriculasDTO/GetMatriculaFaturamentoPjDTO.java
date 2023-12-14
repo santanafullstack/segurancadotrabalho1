@@ -14,6 +14,6 @@ public class GetMatriculaFaturamentoPjDTO {
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
-	private GetFuncionarioDTOs funcionario;
+	private GetPessoaFisicaDTO pessoafisica;
 	private GetTurmasDTO turmas;
 }

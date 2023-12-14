@@ -1,10 +1,10 @@
 package br.com.jbst.DTO;
 
 import java.time.Instant;
-
 import java.util.UUID;
 
 import br.com.jbst.DTOs.GetFuncionarioDTOs;
+import br.com.jbst.MatriculasDTO.GetPessoaFisicaDTO;
 import lombok.Data;
 
 
@@ -16,5 +16,6 @@ public class GetMatriculaTurmDTO {
 	private String venda;
 	private String valor;
 	private String status;
+	private GetPessoaFisicaDTO pessoafisica;
 	private GetFuncionarioDTOs funcionario;
 }

@@ -1,7 +1,6 @@
 package br.com.jbst.services;
 import java.time.Instant;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,12 +11,9 @@ import org.springframework.stereotype.Service;
 
 import br.com.jbst.DTO.GetInstrutorDTO;
 import br.com.jbst.DTO.GetInstrutorDTOs;
-import br.com.jbst.DTO.GetUnidadeDeTreinamentoDTO;
 import br.com.jbst.DTO.PostInstrutorDTO;
 import br.com.jbst.DTO.PutInstrutorDTO;
 import br.com.jbst.entities.Instrutor;
-import br.com.jbst.entities.UnidadeDeTreinamento;
-import br.com.jbst.entities.map.Formacao;
 import br.com.jbst.repositories.FormacaoRepository;
 import br.com.jbst.repositories.InstrutorRepository;
 

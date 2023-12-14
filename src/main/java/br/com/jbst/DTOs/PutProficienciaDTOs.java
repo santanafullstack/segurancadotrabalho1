@@ -1,6 +1,5 @@
 package br.com.jbst.DTOs;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import lombok.Data;

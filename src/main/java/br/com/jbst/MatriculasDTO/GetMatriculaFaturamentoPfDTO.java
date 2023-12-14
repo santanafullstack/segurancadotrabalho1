@@ -1,10 +1,11 @@
 package br.com.jbst.MatriculasDTO;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import br.com.jbst.DTO.GetTurmasDTO;
-import br.com.jbst.DTOs.GetFuncionarioDTOs;
+import br.com.jbst.DTO.RelatorioMatriculaDTO;
 import lombok.Data;
 
 @Data
@@ -15,7 +16,7 @@ public class GetMatriculaFaturamentoPfDTO {
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
-	private GetFuncionarioDTOs funcionario;
 	private GetTurmasDTO turmas;
-
+	private List<RelatorioMatriculaDTO> matriculas;
+	private BigDecimal total;
 }

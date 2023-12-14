@@ -5,10 +5,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import br.com.jbst.entities.Matriculas;
-import br.com.jbst.entities.Turmas;
 
 public interface MatriculasRepository extends JpaRepository<Matriculas, UUID > {
 

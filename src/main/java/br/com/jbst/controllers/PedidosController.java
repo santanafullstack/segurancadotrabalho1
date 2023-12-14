@@ -16,15 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTO.GetPedidosDTO;
-import br.com.jbst.DTO.PostCursoDTO;
 import br.com.jbst.DTO.PostPedidosDTO;
-import br.com.jbst.DTO.PutCursoDTO;
 import br.com.jbst.DTO.PutPedidosDTO;
-import br.com.jbst.DTO.RelatorioFaturamentoDTO;
 import br.com.jbst.DTO.RelatorioPedidosDTO;
-import br.com.jbst.services.CursoService;
 import br.com.jbst.services.PedidosService;
 
 @RestController

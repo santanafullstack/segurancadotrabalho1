@@ -96,6 +96,23 @@ public class ProficienciaService {
     
     
 
+
+    public byte[] getProficienciaData(UUID proficienciaId) {
+        Optional<Proficiencia> proficienciaOptional = proficienciaRepository.findById(proficienciaId);
+
+        if (proficienciaOptional.isPresent()) {
+            Proficiencia proficiencia = proficienciaOptional.get();
+
+            if (proficiencia.getInserir_proficiencia() != null) {
+                return proficiencia.getInserir_proficiencia();
+            } else {
+                throw new RuntimeException("Os dados binários da proficiência estão vazios.");
+            }
+        } else {
+            throw new RuntimeException("Proficiência não encontrada para o ID: " + proficienciaId);
+        }
+    }
 }
+
 
 

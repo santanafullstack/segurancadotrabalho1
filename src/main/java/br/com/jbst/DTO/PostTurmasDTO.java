@@ -1,15 +1,9 @@
 package br.com.jbst.DTO;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import br.com.jbst.config.InstantSerializer;
-import br.com.jbst.entities.Curso;
-import br.com.jbst.entities.Instrutor;
-import br.com.jbst.entities.UnidadeDeTreinamento;
 import lombok.Data;
 
 @Data
@@ -30,5 +24,10 @@ public class PostTurmasDTO {
 	private String dia;
 	private String mes;
 	private String ano;
+	private String primeirodia;
+	private String segundodia;
+	private String terceirodia;
+	private String quartodia;
+	private String quintodia;
 
 }

@@ -12,16 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.jbst.DTO.GetPedidosDTO;
-import br.com.jbst.DTO.PostMatriculaDTO;
 import br.com.jbst.DTO.PostPedidosDTO;
 import br.com.jbst.DTO.PutPedidosDTO;
-import br.com.jbst.DTO.RelatorioFaturamentoDTO;
 import br.com.jbst.DTO.RelatorioPedidosDTO;
-import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.Matriculas;
 import br.com.jbst.entities.Pedidos;
 import br.com.jbst.repositories.PedidosRepository;
-import java.util.ArrayList;
 
 
 

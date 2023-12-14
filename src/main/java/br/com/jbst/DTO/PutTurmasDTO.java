@@ -1,13 +1,10 @@
 package br.com.jbst.DTO;
 
-import java.sql.Date;
+
 import java.time.Instant;
 import java.util.UUID;
 
-import org.modelmapper.internal.bytebuddy.implementation.bind.MethodDelegationBinder.BindingResolver.Unique;
 
-import br.com.jbst.entities.Curso;
-import br.com.jbst.entities.Instrutor;
 import lombok.Data;
 
 @Data
@@ -16,8 +13,8 @@ public class PutTurmasDTO {
 	private UUID idcurso;
 	private UUID idUnidadedetreinamento;
 	private UUID idTurmas;
-	private Date datainicio;
-	private Date datafim;
+	private Instant datainicio;
+	private Instant datafim;
 	private String  cargahoraria;
 	private String modalidade;
 	private String status;
@@ -29,4 +26,9 @@ public class PutTurmasDTO {
 	private String dia;
 	private String mes;
 	private String ano;
+	private String primeirodia;
+	private String segundodia;
+	private String terceirodia;
+	private String quartodia;
+	private String quintodia;
 }

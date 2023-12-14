@@ -17,13 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.jbst.DTO.GetCursoDTO;
-import br.com.jbst.DTO.PostCursoDTO;
-import br.com.jbst.DTO.PutCursoDTO;
+
 import br.com.jbst.DTOs.GetProficienciaDTOs;
 import br.com.jbst.DTOs.PostProficienciaDTOs;
 import br.com.jbst.DTOs.PutProficienciaDTOs;
-import br.com.jbst.services.CursoService;
 import br.com.jbst.services.ProficienciaService;
 
 
@@ -89,4 +86,25 @@ public class ProficienciaController {
 					.body(proficienciaService.excluirProficiencia(id));
 
 	}
+	
+    @GetMapping("/download/{proficienciaId}")
+    public ResponseEntity<byte[]> downloadProficiencia(@PathVariable UUID proficienciaId) {
+        try {
+            byte[] proficienciaData = proficienciaService.getProficienciaData(proficienciaId);
+
+            // Configurar os cabeçalhos da resposta, por exemplo, o tipo de conteúdo
+            // e o nome do arquivo se necessário
+            // HttpHeaders headers = new HttpHeaders();
+            // headers.setContentType(MediaType.APPLICATION_PDF);
+            // headers.setContentDispositionFormData("attachment", "proficiencia.pdf");
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    // .headers(headers)
+                    .body(proficienciaData);
+        } catch (Exception e) {
+            // Lidar com exceções, por exemplo, proficiência não encontrada ou dados vazios
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

@@ -8,8 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import br.com.jbst.config.InstantSerializer;
 import lombok.Data;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import br.com.jbst.config.InstantSerializer;
+
 
 @Data
 public class GetTurmasDTO {
@@ -26,6 +25,7 @@ public class GetTurmasDTO {
 	private String  cargahoraria;
 	private String modalidade;
 	private String status;
+	private String nivel;
 	private String descricao;
 	private String diasespecificos;
 	private String tipo;
@@ -33,6 +33,11 @@ public class GetTurmasDTO {
 	private String dia;
 	private String mes;
 	private String ano;
+	private String primeirodia;
+	private String segundodia;
+	private String terceirodia;
+	private String quartodia;
+	private String quintodia;
 	private GetCursoDTO curso;
 	private GetUnidadeDeTreinamentoDTO unidadeDeTreinamento;
 	private List<GetInstrutorDTO> instrutores;

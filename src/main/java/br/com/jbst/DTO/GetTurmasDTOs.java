@@ -5,9 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.jbst.entities.Curso;
 import lombok.Data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -40,7 +38,13 @@ public class GetTurmasDTOs {
 	private String dia;
 	private String mes;
 	private String ano;
+	private String primeirodia;
+	private String segundodia;
+	private String terceirodia;
+	private String quartodia;
+	private String quintodia;
 	private GetCursoDTO curso;
+	
 	private GetUnidadeDeTreinamentoDTO unidadeDeTreinamento;
 	private List<GetInstrutorDTO> instrutores;
 	private List<GetMatriculaTurmDTO> matricula;

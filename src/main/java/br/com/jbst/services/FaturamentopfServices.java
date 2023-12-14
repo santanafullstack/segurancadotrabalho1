@@ -11,14 +11,10 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.jbst.DTO.RelatorioFaturamentoDTO;
 import br.com.jbst.DTO.RelatorioFaturamentoPfDto;
-import br.com.jbst.DTOs.GetFaturamentoDTO;
 import br.com.jbst.DTOs.GetFaturamentopfDto;
 import br.com.jbst.DTOs.PostFaturamentopfDto;
-import br.com.jbst.DTOs.PutFaturamentoDTO;
 import br.com.jbst.DTOs.PutFaturamentopfDto;
-import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.FaturamentoPf;
 import br.com.jbst.entities.Matriculas;
 import br.com.jbst.repositories.FaturamentopfRepository;
