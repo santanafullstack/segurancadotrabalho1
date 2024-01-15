@@ -54,7 +54,6 @@ public class TurmasService {
 		//criando uma Turma
 		Turmas turmas = modelMapper.map(dto, Turmas.class);
 		turmas.setIdTurmas(UUID.randomUUID());
-    	turmas.setDataHoraCriacao(Instant.now());
 		turmas.setCurso(cursoRepository.findById(dto.getIdCurso()).get());
 		turmas.setUnidadeDeTreinamento(unidadeRepository.findById(dto.getIdUnidadeDeTreinamento()).get());
 		int numeroTurma = gerarNumeroTurma();
@@ -77,7 +76,6 @@ public class TurmasService {
 		UUID id = dto.getIdTurmas();
 		Turmas turmas = turmasRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, turmas );
-    	turmas.setDataHoraCriacao(Instant.now());
 		turmas.setCurso(cursoRepository.findById(dto.getIdcurso()).get());
 		turmas.setUnidadeDeTreinamento(unidadeRepository.findById(dto.getIdUnidadedetreinamento()).get());
 		turmasRepository.save(turmas);
@@ -133,7 +131,6 @@ public GetTurmasDTO incluirInstrutor(PutTurmasInstrutor dto) throws Exception {
                 .orElseThrow(() -> new NoSuchElementException("Turmas não encontrada com o ID: " + id));
 
         modelMapper.map(dto, turmas);
-        turmas.setDataHoraCriacao(Instant.now());
 
         List<Instrutor> instrutores = new ArrayList<>();
 

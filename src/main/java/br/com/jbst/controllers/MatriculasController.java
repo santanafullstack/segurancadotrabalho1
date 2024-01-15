@@ -1,6 +1,8 @@
 package br.com.jbst.controllers;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.hibernate.boot.MappingNotFoundException;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jbst.DTO.GetMatriculaDTO;
+import br.com.jbst.DTO.GetTurmasDTO;
+import br.com.jbst.DTO.PutTurmasInstrutor;
 import br.com.jbst.MatriculasDTO.AdicionarUsuariosMatriculaDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPjDTO;
@@ -44,7 +48,7 @@ public class MatriculasController {
 	//1
 	@PostMapping("/criar-matriculas-faturamento-pj")
 	public ResponseEntity<GetMatriculaFaturamentoPjDTO> criarMatriculaFaturamentoPj( @RequestBody PostMatriculaFaturamentoPjDTO dto) throws Exception {
-	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculasFaturamentoPj( dto));
+	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculaFaturamentoPj( dto));
 	}
 	
 	//2
@@ -113,9 +117,28 @@ public class MatriculasController {
 
 	}
 	
-	  @PostMapping("/adicionar-usuarios")
-	    public ResponseEntity<GetMatriculaFaturamentoPjDTO> adicionarUsuariosMatricula(@RequestBody AdicionarUsuariosMatriculaDTO dto) {
-	        GetMatriculaFaturamentoPjDTO result = matriculaService.adicionarUsuariosMatricula(dto);
-	        return new ResponseEntity<>(result, HttpStatus.OK);
+	@PutMapping("/incluirUsuarios")
+	public ResponseEntity<GetMatriculaDTO> editarUsuarios(@RequestBody AdicionarUsuariosMatriculaDTO dto) throws Exception {
+	  return ResponseEntity.status(HttpStatus.OK).body(matriculaService.adicionarUsuariosMatricula(dto));
+	}
+	
+	@DeleteMapping("/{matriculaId}/usuarios/{usuarioId}")
+	public ResponseEntity<?> excluirUsuarioMatricula(
+	        @PathVariable UUID matriculaId,
+	        @PathVariable UUID usuarioId) {
+	    try {
+	        // Transforma o usuárioId em uma lista para ser compatível com o método na service
+	        List<UUID> usuarioIds = Collections.singletonList(usuarioId);
+
+	        GetMatriculaDTO matriculaDTO = matriculaService.excluirUsuariosMatricula(matriculaId, usuarioIds);
+	        return ResponseEntity.ok(matriculaDTO);
+	    } catch (NoSuchElementException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Matrícula não encontrada com o ID: " + matriculaId);
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir usuário da matrícula: " + e.getMessage());
 	    }
-}
+	}
+
+	    } 
+
+

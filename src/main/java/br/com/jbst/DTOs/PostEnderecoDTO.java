@@ -9,7 +9,6 @@ import lombok.Data;
 public class PostEnderecoDTO {
 	
     private UUID idUnidadedetreinamento;
-    private Instant dataHoraCriacao;
     private String cep;
     private String logradouro;
     private String complemento;

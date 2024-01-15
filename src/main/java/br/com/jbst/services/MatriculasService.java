@@ -1,21 +1,24 @@
-	package br.com.jbst.services;
+package br.com.jbst.services;
+import java.util.ArrayList;
+import java.rmi.NotBoundException;
+import java.time.Instant;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-	import java.util.ArrayList;
+import javax.security.auth.login.AccountNotFoundException;
 
-	import java.time.Instant;
-	import java.util.List;
-	import java.util.Optional;
-	import java.util.UUID;
-import java.util.function.Supplier;
-
+import org.apache.commons.logging.Log;
 import org.modelmapper.ModelMapper;
-	import org.modelmapper.TypeToken;
-	import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-	
-
-	import br.com.jbst.DTO.GetMatriculaDTO;
+import br.com.jbst.DTO.GetMatriculaDTO;
 import br.com.jbst.MatriculasDTO.AdicionarUsuariosMatriculaDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.GetMatriculaFaturamentoPjDTO;
@@ -29,7 +32,6 @@ import br.com.jbst.MatriculasDTO.PutMatriculaPedidosDTO;
 import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.FaturamentoPf;
 import br.com.jbst.entities.Matriculas;
-import br.com.jbst.entities.MatriculasUsuarios;
 import br.com.jbst.entities.Pedidos;
 import br.com.jbst.entities.Usuario;
 import br.com.jbst.entities.Turmas;
@@ -39,447 +41,489 @@ import br.com.jbst.repositories.FaturamentoRepository;
 import br.com.jbst.repositories.FaturamentopfRepository;
 import br.com.jbst.repositories.FuncionarioRepository;
 import br.com.jbst.repositories.MatriculasRepository;
-import br.com.jbst.repositories.MatriculasUsuariosRepository;
 import br.com.jbst.repositories.PedidosRepository;
 import br.com.jbst.repositories.PessoaFisicaRepository;
 import br.com.jbst.repositories.TurmasRepository;
 import br.com.jbst.repositories.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+
+
+@Service
+public class MatriculasService {
+
+	@Autowired
+	PedidosService pedidosService;
+
+	@Autowired
+	UsuarioRepository usuarioRepository;
+
+	@Autowired
+	MatriculasRepository matriculasRepository;
+
+	@Autowired
+	PessoaFisicaRepository pessoafisicaRepository;
+
+	@Autowired
+	TurmasRepository turmasRepository;
+
+	@Autowired
+	FuncionarioRepository funcionarioRepository;
+
+	@Autowired
+	PedidosRepository pedidosRepository;
+
+	@Autowired
+	FaturamentoRepository faturamentoRepository;
+
+	@Autowired
+	FaturamentopfRepository faturamentopfRepository;
+
+	@Autowired
+	ModelMapper modelMapper;
 	
-	@Service
-	public class MatriculasService {
-	
-	
-		@Autowired
-		PedidosService pedidosService;
-		
-		@Autowired
-		UsuarioRepository usuarioRepository;
-		
-		@Autowired
-		MatriculasRepository matriculasRepository;
-		
-		@Autowired
-		MatriculasUsuariosRepository matriculasUsuariosRepository;
-		
-		@Autowired
-	    PessoaFisicaRepository pessoafisicaRepository;
-		
-		@Autowired
-		TurmasRepository turmasRepository;
-		
-		@Autowired
-		FuncionarioRepository funcionarioRepository;
-		
-		@Autowired
-		PedidosRepository pedidosRepository;
-		
-		@Autowired
-	    FaturamentoRepository faturamentoRepository;
-		
-		@Autowired
-	    FaturamentopfRepository faturamentopfRepository;
-		
-		@Autowired
-		ModelMapper modelMapper;
-	
-			
-		//1
-		@Transactional
-		public GetMatriculaFaturamentoPjDTO criarMatriculasFaturamentoPj(PostMatriculaFaturamentoPjDTO dto) {
-		    try {
-		        UUID idMatricula = UUID.randomUUID();
-		        Matriculas matricula = modelMapper.map(dto, Matriculas.class);
-		        matricula.setIdMatricula(idMatricula);
-		        matricula.setDataHoraCriacao(Instant.now());
-		        int numeroMatricula = gerarNumeroMatricula();
-		        matricula.setNumeroMatricula(numeroMatricula);
+	@Transactional
+	public GetMatriculaFaturamentoPjDTO criarMatriculaFaturamentoPj(PostMatriculaFaturamentoPjDTO dto) {
+	    try {
+	        // Gere um ID para a matrícula
+	        UUID idMatricula = UUID.randomUUID();
 
-		        Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElseThrow();
-		        matricula.setTurmas(turma);
+	        // Crie uma nova instância de Matriculas e atribua o ID gerado e a data/hora de criação
+	        Matriculas matricula = new Matriculas();
+	        matricula.setIdMatricula(idMatricula);
+	        matricula.setDataHoraCriacao(Instant.now());
 
-		        Funcionario funcionario = funcionarioRepository.findById(dto.getFuncionario()).orElseThrow(() -> new NotFoundException());
-		        matricula.setFuncionario(funcionario);
+	        // Mapeie os dados do DTO para a entidade Matriculas
+	        modelMapper.map(dto, matricula);
 
-		        Faturamento faturamento = faturamentoRepository.findById(dto.getFaturamento()).orElseThrow(() -> new NotFoundException());
-		        matricula.setFaturamento(faturamento);
+	        // Gere um número de matrícula
+	        int numeroMatricula = gerarNumeroMatricula();
+	        matricula.setNumeroMatricula(numeroMatricula);
 
-		        Usuario usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow(() -> new NotFoundException());
+	        // Busque a turma no repositório
+	        Turmas turma = turmasRepository.findById(dto.getIdTurmas())
+	                .orElseThrow(() -> new NotFoundException());
 
-		        // Inicialize a lista matriculasUsuarios se for nula
-		        if (matricula.getMatriculasUsuarios() == null) {
-		            matricula.setMatriculasUsuarios(new ArrayList<>());
-		        }
+	        // Busque o funcionário no repositório
+	        Funcionario funcionario = funcionarioRepository.findById(dto.getFuncionario())
+	                .orElseThrow(() -> new NotFoundException());
 
-		        // Salve a entidade Matriculas no banco de dados para obter o ID válido
-		        matricula = matriculasRepository.save(matricula);
+	        boolean funcionarioJaMatriculado = matriculasRepository.existsByFuncionarioAndTurmas(funcionario, turma);
 
-		        // Crie uma instância de MatriculasUsuarios
-		        MatriculasUsuarios matriculasUsuarios = new MatriculasUsuarios();
-		        matriculasUsuarios.setMatricula(matricula);
-		        matriculasUsuarios.setUsuario(usuario);
+	        if (funcionarioJaMatriculado) {
+	            throw new TurmaAlreadyExistsException("Este funcionário já está matriculado nesta turma.");
+	        }
 
-		        // Verifique e inicialize novamente a lista matriculasUsuarios
-		        if (matricula.getMatriculasUsuarios() == null) {
-		            matricula.setMatriculasUsuarios(new ArrayList<>());
-		        }
+	        // Associe a turma e o funcionário à matrícula
+	        matricula.setTurmas(turma);
+	        matricula.setFuncionario(funcionario);
 
-		        matricula.getMatriculasUsuarios().add(matriculasUsuarios);
+	        // Busque o faturamento no repositório
+	        Faturamento faturamento = faturamentoRepository.findById(dto.getFaturamento())
+	                .orElseThrow(() -> new NotFoundException());
 
-		        // Salve novamente a matrícula para persistir a associação com MatriculasUsuarios
-		        matricula = matriculasRepository.save(matricula);
+	        // Associe o faturamento à matrícula
+	        matricula.setFaturamento(faturamento);
 
-		        return modelMapper.map(matricula, GetMatriculaFaturamentoPjDTO.class);
-		    } catch (Exception e) {
-		        // Log ou manipule a exceção conforme necessário
-		        throw new RuntimeException("Erro ao criar matrícula com faturamento PJ.", e);
-		    }
+	        // Busque o usuário no repositório
+	        Usuario usuario = usuarioRepository.findById(dto.getId())
+	                .orElseThrow(() -> new NotFoundException());
+
+	        // Inicialize a lista matriculasUsuarios se for nula
+	        if (usuario.getMatriculas() == null) {
+	            usuario.setMatriculas(new ArrayList<>());
+	        }
+
+	        // Adicione a matrícula ao usuário
+	        usuario.getMatriculas().add(matricula);
+
+	        // Salve a matrícula no repositório
+	        matricula = matriculasRepository.save(matricula);
+
+	        // Salve novamente o usuário para persistir a associação com Matriculas
+	        usuario = usuarioRepository.save(usuario);
+
+	        // Mapeie a entidade matricula para o DTO de resposta
+	        return modelMapper.map(matricula, GetMatriculaFaturamentoPjDTO.class);
+	    } catch (NotFoundException e) {
+	        // Log ou manipule a exceção conforme necessário
+	        throw new RuntimeException("Erro ao criar matrícula com faturamento PJ. Detalhes: " + e.getMessage(), e);
+	    } catch (Exception e) {
+	        // Log ou manipule a exceção conforme necessário
+	        throw new RuntimeException("Erro ao criar matrícula com faturamento PJ.", e);
+	    }
+	}
+
+	public class TurmaAlreadyExistsException extends RuntimeException {
+	    public TurmaAlreadyExistsException(String message) {
+	        super(message);
+	    }
+	}
+
+
+	// 2
+	public GetMatriculaFaturamentoPjDTO editarMatriculaPj(PutMatriculaFaturamentoPjDTO dto) throws Exception {
+		Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
+
+		if (registro.isEmpty()) {
+			throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
 		}
 
+		Matriculas matriculas = registro.get();
 
+		modelMapper.map(dto, matriculas); // Utiliza o ModelMapper para mapear os dados do DTO para a entidade
 
-		//2
-		public GetMatriculaFaturamentoPjDTO editarMatriculaPj(PutMatriculaFaturamentoPjDTO dto) throws Exception {
-		    Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
+		matriculas.setDataHoraCriacao(Instant.now());
 
-		    if (registro.isEmpty()) {
-		        throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
-		    }
+		Optional<Funcionario> funcionario = funcionarioRepository.findById(dto.getIdFuncionario());
 
-		    Matriculas matriculas = registro.get();
-		    
-		    modelMapper.map(dto, matriculas); // Utiliza o ModelMapper para mapear os dados do DTO para a entidade
-
-		    matriculas.setDataHoraCriacao(Instant.now());
-
-		    Optional<Funcionario> funcionario = funcionarioRepository.findById(dto.getIdFuncionario());
-
-		    if (funcionario.isPresent()) {
-		        matriculas.setFuncionario(funcionario.get());
-		    } else {
-		        throw new IllegalArgumentException("Funcionário inválido: " + dto.getIdFuncionario());
-		    }
-
-		    Optional<Turmas> turma = turmasRepository.findById(dto.getIdTurmas());
-
-		    if (turma.isPresent()) {
-		        matriculas.setTurmas(turma.get());
-		    } else {
-		        throw new IllegalArgumentException("Turma inválida: " + dto.getIdTurmas());
-		    }
-
-		    Optional<Faturamento> faturamento = faturamentoRepository.findById(dto.getIdfaturamento());
-
-		    if (faturamento.isPresent()) {
-		        matriculas.setFaturamento(faturamento.get());
-		    } else {
-		        throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamento());
-		    }
-
-		    matriculasRepository.save(matriculas);
-		    return modelMapper.map(matriculas, GetMatriculaFaturamentoPjDTO.class);
+		if (funcionario.isPresent()) {
+			matriculas.setFuncionario(funcionario.get());
+		} else {
+			throw new IllegalArgumentException("Funcionário inválido: " + dto.getIdFuncionario());
 		}
 
-		//3
-		@Transactional
-		public GetMatriculaFaturamentoPfDTO criarMatriculasFaturamentoPf(PostMatriculaFaturamentoPfDTO dto) {
-		    try {
-		        UUID idMatricula = UUID.randomUUID();
-		        Matriculas matricula = modelMapper.map(dto, Matriculas.class);
-		        matricula.setIdMatricula(idMatricula);
-		        matricula.setDataHoraCriacao(Instant.now());
-		        int numeroMatricula = gerarNumeroMatricula();
-		        matricula.setNumeroMatricula(numeroMatricula);
+		Optional<Turmas> turma = turmasRepository.findById(dto.getIdTurmas());
 
-		        Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null);
-		        if (turma == null) {
-		            // Trate a situação em que a turma não é encontrada
-		            // Pode lançar uma exceção ou retornar uma resposta adequada
-		        }
-		        matricula.setTurmas(turma);
-
-		        PessoaFisica pessoafisica = pessoafisicaRepository.findById(dto.getIdpessoafisica()).orElse(null);
-		        if (pessoafisica == null) {
-		            // Trate a situação em que a pessoa física não é encontrada
-		            // Pode lançar uma exceção ou retornar uma resposta adequada
-		        }
-		        matricula.setPessoafisica(pessoafisica);
-
-		        FaturamentoPf faturamento = faturamentopfRepository.findById(dto.getIdfaturamentopf()).orElse(null);
-		        if (faturamento == null) {
-		            // Trate a situação em que o faturamento não é encontrado
-		            // Pode lançar uma exceção ou retornar uma resposta adequada
-		        }
-		        matricula.setFaturamentopf(faturamento);
-
-		        // Adiciona a lógica para associar usuários à matrícula
-		        Usuario usuario = usuarioRepository.findById(dto.getUsuario()).orElse(null);
-		        if (usuario == null) {
-		            // Trate a situação em que o usuário não é encontrado
-		            // Pode lançar uma exceção ou retornar uma resposta adequada
-		        }
-
-		        // Inicialize a lista matriculasUsuarios se for nula
-		        if (matricula.getMatriculasUsuarios() == null) {
-		            matricula.setMatriculasUsuarios(new ArrayList<>());
-		        }
-
-		        // Salve a entidade Matriculas no banco de dados para obter o ID válido
-		        matricula = matriculasRepository.save(matricula);
-
-		        // Crie uma instância de MatriculasUsuarios
-		        MatriculasUsuarios matriculasUsuarios = new MatriculasUsuarios();
-		        matriculasUsuarios.setMatricula(matricula);
-		        matriculasUsuarios.setUsuario(usuario);
-
-		        // Verifique e inicialize novamente a lista matriculasUsuarios
-		        if (matricula.getMatriculasUsuarios() == null) {
-		            matricula.setMatriculasUsuarios(new ArrayList<>());
-		        }
-
-		        matricula.getMatriculasUsuarios().add(matriculasUsuarios);
-
-		        // Salve novamente a matrícula para persistir a associação com MatriculasUsuarios
-		        matricula = matriculasRepository.save(matricula);
-
-		        return modelMapper.map(matricula, GetMatriculaFaturamentoPfDTO.class);
-		    } catch (Exception e) {
-		        // Log ou manipule a exceção conforme necessário
-		        throw new RuntimeException("Erro ao criar matrícula com faturamento PF.", e);
-		    }
+		if (turma.isPresent()) {
+			matriculas.setTurmas(turma.get());
+		} else {
+			throw new IllegalArgumentException("Turma inválida: " + dto.getIdTurmas());
 		}
+
+		Optional<Faturamento> faturamento = faturamentoRepository.findById(dto.getIdfaturamento());
+
+		if (faturamento.isPresent()) {
+			matriculas.setFaturamento(faturamento.get());
+		} else {
+			throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamento());
+		}
+
+		matriculasRepository.save(matriculas);
+		return modelMapper.map(matriculas, GetMatriculaFaturamentoPjDTO.class);
+	}
 	
-			
-		//4
-		public GetMatriculaFaturamentoPfDTO editarMatriculaPf(PutMatriculaFaturamentoPfDTO dto) throws Exception {
-		    Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
 
-		    if (registro.isEmpty()) {
-		        throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
-		    }
+	@Transactional
+	public GetMatriculaFaturamentoPfDTO criarMatriculasFaturamentoPf(PostMatriculaFaturamentoPfDTO matriculaDTO) {
+	    try {
+	        Matriculas matricula = modelMapper.map(matriculaDTO, Matriculas.class);
 
-		    Matriculas matriculas = registro.get();
-		    // Atualiza apenas os campos que não são IDs
-		    modelMapper.map(dto, matriculas);
-		    matriculas.setDataHoraCriacao(Instant.now());
+	        Turmas turma = turmasRepository.findById(matriculaDTO.getIdTurmas())
+	                .orElseThrow(() -> new AccountNotFoundException("Turma não encontrada com ID: " + matriculaDTO.getIdTurmas()));
 
-		    // Atualiza Pessoa Física
-		    Optional<PessoaFisica> pessoaFisica = pessoafisicaRepository.findById(dto.getIdpessoafisica());
-		    if (pessoaFisica.isPresent()) {
-		        matriculas.setPessoafisica(pessoaFisica.get());
-		    } else {
-		        throw new IllegalArgumentException("Pessoa Física inválida: " + dto.getIdpessoafisica());
-		    }
+	        PessoaFisica pessoaFisica = pessoafisicaRepository.findById(matriculaDTO.getIdpessoafisica())
+	                .orElseThrow(() -> new AccountNotFoundException("Pessoa física não encontrada com ID: " + matriculaDTO.getIdpessoafisica()));
 
-		    // Atualiza Turma
-		    Optional<Turmas> turma = turmasRepository.findById(dto.getIdTurmas());
-		    if (turma.isPresent()) {
-		        matriculas.setTurmas(turma.get());
-		    } else {
-		        throw new IllegalArgumentException("Turma inválida: " + dto.getIdTurmas());
-		    }
+	        FaturamentoPf faturamentoPf = faturamentopfRepository.findById(matriculaDTO.getIdfaturamentopf())
+	                .orElseThrow(() -> new AccountNotFoundException("FaturamentoPF não encontrado com ID: " + matriculaDTO.getIdfaturamentopf()));
 
-		    // Atualiza Faturamento
-		    Optional<FaturamentoPf> faturamento = faturamentopfRepository.findById(dto.getIdfaturamentopf());
-		    if (faturamento.isPresent()) {
-		        matriculas.setFaturamentopf(faturamento.get());
-		    } else {
-		        throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamentopf());
-		    }
+	        // Verificar se a pessoa física já está matriculada na turma
+	        boolean pessoaFisicaJaMatriculada = matriculasRepository.existsByPessoafisicaAndTurmas(pessoaFisica, turma);
 
-		    matriculasRepository.save(matriculas);
-		    return modelMapper.map(matriculas, GetMatriculaFaturamentoPfDTO.class);
+	        if (pessoaFisicaJaMatriculada) {
+	            throw new Exception("Esta pessoa já está matriculada nesta turma.");
+	        }
+
+	        // Verificar duplicidade de CPF na turma
+	        boolean cpfDuplicadoNaTurma = matriculasRepository.existsByTurmasAndPessoafisica_Cpf(turma, pessoaFisica.getCpf());
+
+	        if (cpfDuplicadoNaTurma) {
+	            throw new Exception("Duplicidade de CPF na turma.");
+	        }
+
+	        // Configurar as associações na entidade Matriculas
+	        matricula.setIdMatricula(UUID.randomUUID());
+	        matricula.setDataHoraCriacao(Instant.now());
+	        matricula.setTurmas(turma);
+	        matricula.setPessoafisica(pessoaFisica);
+	        matricula.setFaturamentopf(faturamentoPf);
+
+	        // Obter o usuário com base no ID fornecido no DTO
+	        Usuario usuario = usuarioRepository.findById(matriculaDTO.getId())
+	                .orElseThrow(() -> new NotBoundException("Usuário não encontrado com ID: " + matriculaDTO.getId()));
+
+	        // Inicializar a lista de matrículas do usuário se for nula
+	        if (usuario.getMatriculas() == null) {
+	            usuario.setMatriculas(new ArrayList<>());
+	        }
+
+	        // Adicionar a matrícula ao usuário
+	        usuario.getMatriculas().add(matricula);
+
+	        // Salvar a matrícula para persistir as associações
+	        matriculasRepository.save(matricula);
+
+	        // Salvar o usuário novamente para persistir a associação com Matriculas
+	        usuarioRepository.save(usuario);
+
+	        // Mapear a entidade Matriculas para DTO usando ModelMapper
+	        return modelMapper.map(matricula, GetMatriculaFaturamentoPfDTO.class);
+	    } catch (Exception e) {
+	        // Logar a exceção ou lançar uma exceção mais específica, se necessário
+	        throw new RuntimeException("Já existe uma matricula nesta Turma para este cpf.", e);
+	    }
+	}
+
+
+
+	// 4
+	public GetMatriculaFaturamentoPfDTO editarMatriculaPf(PutMatriculaFaturamentoPfDTO dto) throws Exception {
+		Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
+
+		if (registro.isEmpty()) {
+			throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
 		}
+
+		Matriculas matriculas = registro.get();
+		// Atualiza apenas os campos que não são IDs
+		modelMapper.map(dto, matriculas);
+		matriculas.setDataHoraCriacao(Instant.now());
+
+		// Atualiza Pessoa Física
+		Optional<PessoaFisica> pessoaFisica = pessoafisicaRepository.findById(dto.getIdpessoafisica());
+		if (pessoaFisica.isPresent()) {
+			matriculas.setPessoafisica(pessoaFisica.get());
+		} else {
+			throw new IllegalArgumentException("Pessoa Física inválida: " + dto.getIdpessoafisica());
+		}
+
+		// Atualiza Turma
+		Optional<Turmas> turma = turmasRepository.findById(dto.getIdTurmas());
+		if (turma.isPresent()) {
+			matriculas.setTurmas(turma.get());
+		} else {
+			throw new IllegalArgumentException("Turma inválida: " + dto.getIdTurmas());
+		}
+
+		// Atualiza Faturamento
+		Optional<FaturamentoPf> faturamento = faturamentopfRepository.findById(dto.getIdfaturamentopf());
+		if (faturamento.isPresent()) {
+			matriculas.setFaturamentopf(faturamento.get());
+		} else {
+			throw new IllegalArgumentException("Faturamento inválido: " + dto.getIdfaturamentopf());
+		}
+
+		matriculasRepository.save(matriculas);
+		return modelMapper.map(matriculas, GetMatriculaFaturamentoPfDTO.class);
+	}
+
+	@Transactional
+	public GetMatriculaPedidosDTO criarMatriculasPedidos(UUID idPedidos, PostMatriculaPedidosDTO dto) {
+	    try {
+	        // Gere um ID único para a matrícula
+	        UUID idMatricula = UUID.randomUUID();
+
+	        // Mapeie os dados do DTO para a entidade Matriculas
+	        Matriculas matricula = modelMapper.map(dto, Matriculas.class);
+
+	        // Configure os atributos da matrícula
+	        matricula.setIdMatricula(idMatricula);
+	        matricula.setDataHoraCriacao(Instant.now());
+	        int numeroMatricula = gerarNumeroMatricula();
+	        matricula.setNumeroMatricula(numeroMatricula);
+
+	        // Busque a turma no repositório
+	        Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null);
+	        if (turma == null) {
+	            // Trate a situação em que a turma não é encontrada
+	            // Pode lançar uma exceção ou retornar uma resposta adequada
+	        }
+
+	        // Verifique se o funcionário já está matriculado nesta turma
+	        Funcionario funcionario = funcionarioRepository.findById(dto.getFuncionario())
+	                .orElseThrow(() -> new NotFoundException());
+	        boolean funcionarioJaMatriculado = matriculasRepository.existsByFuncionarioAndTurmas(funcionario, turma);
+	        if (funcionarioJaMatriculado) {
+	            throw new TurmaAlreadyExistsException("Este funcionário já está matriculado nesta turma.");
+	        }
+
+	        // Configure a turma e o funcionário na matrícula
+	        matricula.setTurmas(turma);
+	        matricula.setFuncionario(funcionario);
+
+	        // Busque o pedido no repositório
+	        Optional<Pedidos> pedidoOptional = pedidosRepository.findById(idPedidos);
+	        if (pedidoOptional.isPresent()) {
+	            // Prossiga com a lógica para associar usuários à matrícula
+	            Pedidos pedido = pedidoOptional.get();
+	            Integer creditos = pedido.getCreditos() != null ? pedido.getCreditos() : 0;
+	            Integer matriculasRealizadas = pedido.getMatriculasrealizadas() != null ? pedido.getMatriculasrealizadas() : 0;
+	            creditos--;
+	            matriculasRealizadas++;
+	            pedido.setCreditos(creditos);
+	            pedido.setMatriculasrealizadas(matriculasRealizadas);
+	            matricula.setPedidos(pedido);
+
+	            // Busque o usuário no repositório
+	            Usuario usuario = usuarioRepository.findById(dto.getId()).orElseThrow(() -> new NotFoundException());
+
+	            // Inicialize a lista de usuários se for nula
+	            if (matricula.getUsuarios() == null) {
+	                matricula.setUsuarios(new ArrayList<>());
+	            }
+
+	            // Adicione a matrícula ao usuário
+	            matricula.getUsuarios().add(usuario);
+
+	            // Salve novamente a matrícula para persistir a associação com usuários
+	            matricula = matriculasRepository.save(matricula);
+	        } else {
+	            throw new RuntimeException("Pedido não encontrado");
+	        }
+
+	        // Converta a entidade Matriculas para DTO e retorne
+	        return modelMapper.map(matricula, GetMatriculaPedidosDTO.class);
+	    } catch (Exception e) {
+	        // Log ou manipule a exceção conforme necessário
+	        throw new RuntimeException("Este Funcionário já está matriculado nesta Turma.", e);
+	    }
+	}
+
+
+
+	// 6
+	public GetMatriculaPedidosDTO editarMatriculaPedidos(UUID idPedidos, UUID idMatricula, PutMatriculaPedidosDTO dto) {
+		// Encontrar a matrícula pelo ID
+		Optional<Matriculas> matriculaOptional = matriculasRepository.findById(idMatricula);
+
+		if (matriculaOptional.isPresent()) {
+			Matriculas matricula = matriculaOptional.get();
+
+			// Atualizar os campos da matrícula com os valores do DTO
+			modelMapper.map(dto, matricula);
+
+			// Encontrar a turma pelo ID e definir na matrícula
+			Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null);
+			if (turma != null) {
+				matricula.setTurmas(turma);
+			} else {
+				throw new RuntimeException("Turma não encontrada");
+			}
+
+			// Encontrar o funcionário pelo ID e definir na matrícula
+			UUID idFuncionario = dto.getIdFuncionario();
+			Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElse(null);
+			if (funcionario != null) {
+				matricula.setFuncionario(funcionario);
+			} else {
+				throw new RuntimeException("Funcionário não encontrado");
+			}
+
+			// Encontrar o pedido pelo ID e atualizar os campos
+			Optional<Pedidos> pedidoOptional = pedidosRepository.findById(idPedidos);
+			if (pedidoOptional.isPresent()) {
+				Pedidos pedido = pedidoOptional.get();
+				Integer creditos = pedido.getCreditos() != null ? pedido.getCreditos() : 0;
+				Integer matriculasRealizadas = pedido.getMatriculasrealizadas() != null
+						? pedido.getMatriculasrealizadas()
+						: 0;
+				creditos--;
+				matriculasRealizadas++;
+				pedido.setCreditos(creditos);
+				pedido.setMatriculasrealizadas(matriculasRealizadas);
+				matricula.setPedidos(pedido);
+			} else {
+				throw new RuntimeException("Pedido não encontrado");
+			}
+
+			// Salvar a matrícula atualizada
+			matriculasRepository.save(matricula);
+
+			// Retornar a matrícula mapeada para o DTO desejado
+			return modelMapper.map(matricula, GetMatriculaPedidosDTO.class);
+		} else {
+			throw new RuntimeException("Matrícula não encontrada");
+		}
+	}
+
+	public List<GetMatriculaDTO> consultarMatriculas(String numeroMatricula) throws Exception {
+		List<Matriculas> matriculas = matriculasRepository.findAllMatriculas();
+		List<GetMatriculaDTO> lista = modelMapper.map(matriculas, new TypeToken<List<GetMatriculaDTO>>() {
+		}.getType());
+		return lista;
+	}
+
+	public GetMatriculaDTO consultarUmaMatricula(UUID idMatriculas) {
+		Optional<Matriculas> registro = matriculasRepository.findById(idMatriculas);
+
+		if (registro.isPresent()) {
+			Matriculas matriculas = registro.get();
+			return modelMapper.map(matriculas, GetMatriculaDTO.class);
+		} else {
+
+			throw new RuntimeException("Matricula não encontrada"); // Lançar exceção quando não encontrada
+		}
+	}
+
+	private int gerarNumeroMatricula() {
+		Integer ultimoNumero = matriculasRepository.findMaxNumeroMatricula();
+		if (ultimoNumero == null) {
+			ultimoNumero = 0;
+		}
+		return ultimoNumero + 1;
+	}
+
+	// 7 - Adicionar Usuários
+
 	
-		//5
-		@Transactional
-		public GetMatriculaPedidosDTO criarMatriculasPedidos(UUID idPedidos, PostMatriculaPedidosDTO dto) {
-		    try {
-		        UUID idMatricula = UUID.randomUUID();
-		        Matriculas matricula = modelMapper.map(dto, Matriculas.class);
-		        matricula.setIdMatricula(idMatricula);
-		        matricula.setDataHoraCriacao(Instant.now());
-		        int numeroMatricula = gerarNumeroMatricula();
-		        matricula.setNumeroMatricula(numeroMatricula);
+	public GetMatriculaDTO adicionarUsuariosMatricula(AdicionarUsuariosMatriculaDTO dto) throws Exception {
+	    try {
+	        UUID matriculaId = dto.getIdMatricula();
+	        Matriculas matricula = matriculasRepository.findById(matriculaId)
+	                .orElseThrow(() -> new NoSuchElementException("Matricula não encontrada com o ID: " + matriculaId));
+	        modelMapper.map(dto, matricula);
+	        List<Usuario> usuarios = obterUsuariosPorIds(dto.getIdsUsuarios());
 
-		        Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null);
-		        if (turma == null) {
-		            // Trate a situação em que a turma não é encontrada
-		            // Pode lançar uma exceção ou retornar uma resposta adequada
-		        }
-		        matricula.setTurmas(turma);
+	        // Salva a matrícula separadamente
+	        matricula = matriculasRepository.save(matricula);
 
-		        Funcionario funcionario = funcionarioRepository.findById(dto.getFuncionario()).orElse(null);
-		        if (funcionario == null) {
-		            // Trate a situação em que o funcionário não é encontrado
-		            // Pode lançar uma exceção ou retornar uma resposta adequada
-		        }
-		        matricula.setFuncionario(funcionario);
+	        // Adiciona os usuários à matrícula
+	        matricula.getUsuarios().addAll(usuarios);
+	        matriculasRepository.save(matricula);
 
-		        Optional<Pedidos> pedidoOptional = pedidosRepository.findById(idPedidos);
-		        if (pedidoOptional.isPresent()) {
-		            Pedidos pedido = pedidoOptional.get();
-		            Integer creditos = pedido.getCreditos() != null ? pedido.getCreditos() : 0;
-		            Integer matriculasRealizadas = pedido.getMatriculasrealizadas() != null ? pedido.getMatriculasrealizadas() : 0;
-		            creditos--;
-		            matriculasRealizadas++;
-		            pedido.setCreditos(creditos);
-		            pedido.setMatriculasrealizadas(matriculasRealizadas);
-		            matricula.setPedidos(pedido);
+	        return modelMapper.map(matricula, GetMatriculaDTO.class);
+	    } catch (Exception ex) {
+	        // Trate a exceção de forma apropriada, registre logs, etc.
+	        throw new Exception("Erro ao incluir Matriculas.", ex);
+	    }
+	}
 
-		            // Adiciona a lógica para associar usuários à matrícula
-		            Usuario usuario = usuarioRepository.findById(dto.getUsuario()).orElse(null);
-		            if (usuario == null) {
-		                // Trate a situação em que o usuário não é encontrado
-		                // Pode lançar uma exceção ou retornar uma resposta adequada
-		            }
+	private List<Usuario> obterUsuariosPorIds(List<UUID> usuarioIds) {
+	    List<Usuario> usuarios = new ArrayList<>();
 
-		            // Inicialize a lista matriculasUsuarios se for nula
-		            if (matricula.getMatriculasUsuarios() == null) {
-		                matricula.setMatriculasUsuarios(new ArrayList<>());
-		            }
+	    if (usuarioIds != null && !usuarioIds.isEmpty()) {
+	        for (UUID id : usuarioIds) {
+	            Usuario usuario = usuarioRepository.findById(id)
+	                    .orElseThrow(() -> new NoSuchElementException("Usuario não encontrado com o ID: " + id));
 
-		            // Salve a entidade Matriculas no banco de dados para obter o ID válido
-		            matricula = matriculasRepository.save(matricula);
+	            usuarios.add(usuario);
+	        }
+	    }
 
-		            // Crie uma instância de MatriculasUsuarios
-		            MatriculasUsuarios matriculasUsuarios = new MatriculasUsuarios();
-		            matriculasUsuarios.setMatricula(matricula);
-		            matriculasUsuarios.setUsuario(usuario);
-
-		            // Verifique e inicialize novamente a lista matriculasUsuarios
-		            if (matricula.getMatriculasUsuarios() == null) {
-		                matricula.setMatriculasUsuarios(new ArrayList<>());
-		            }
-
-		            matricula.getMatriculasUsuarios().add(matriculasUsuarios);
-		        } else {
-		            throw new RuntimeException("Pedido não encontrado");
-		        }
-
-		        // Salve novamente a matrícula para persistir a associação com MatriculasUsuarios
-		        matricula = matriculasRepository.save(matricula);
-
-		        return modelMapper.map(matricula, GetMatriculaPedidosDTO.class);
-		    } catch (Exception e) {
-		        // Log ou manipule a exceção conforme necessário
-		        throw new RuntimeException("Erro ao criar matrícula com pedidos.", e);
-		    }
-		}
-
-		 //6
-		public GetMatriculaPedidosDTO editarMatriculaPedidos(UUID idPedidos, UUID idMatricula, PutMatriculaPedidosDTO dto) {
-		    // Encontrar a matrícula pelo ID
-		    Optional<Matriculas> matriculaOptional = matriculasRepository.findById(idMatricula);
-
-		    if (matriculaOptional.isPresent()) {
-		        Matriculas matricula = matriculaOptional.get();
-
-		        // Atualizar os campos da matrícula com os valores do DTO
-		        modelMapper.map(dto, matricula);
-
-		        // Encontrar a turma pelo ID e definir na matrícula
-		        Turmas turma = turmasRepository.findById(dto.getIdTurmas()).orElse(null);
-		        if (turma != null) {
-		            matricula.setTurmas(turma);
-		        } else {
-		            throw new RuntimeException("Turma não encontrada");
-		        }
-
-		        // Encontrar o funcionário pelo ID e definir na matrícula
-		        UUID idFuncionario = dto.getIdFuncionario();
-		        Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElse(null);
-		        if (funcionario != null) {
-		            matricula.setFuncionario(funcionario);
-		        } else {
-		            throw new RuntimeException("Funcionário não encontrado");
-		        }
-
-		        // Encontrar o pedido pelo ID e atualizar os campos
-		        Optional<Pedidos> pedidoOptional = pedidosRepository.findById(idPedidos);
-		        if (pedidoOptional.isPresent()) {
-		            Pedidos pedido = pedidoOptional.get();
-		            Integer creditos = pedido.getCreditos() != null ? pedido.getCreditos() : 0;
-		            Integer matriculasRealizadas = pedido.getMatriculasrealizadas() != null ? pedido.getMatriculasrealizadas() : 0;
-		            creditos--;
-		            matriculasRealizadas++;
-		            pedido.setCreditos(creditos);
-		            pedido.setMatriculasrealizadas(matriculasRealizadas);
-		            matricula.setPedidos(pedido);
-		        } else {
-		            throw new RuntimeException("Pedido não encontrado");
-		        }
-
-		        // Salvar a matrícula atualizada
-		        matriculasRepository.save(matricula);
-
-		        // Retornar a matrícula mapeada para o DTO desejado
-		        return modelMapper.map(matricula, GetMatriculaPedidosDTO.class);
-		    } else {
-		        throw new RuntimeException("Matrícula não encontrada");
-		    }
-		}
-
-
-		  public List<GetMatriculaDTO> consultarMatriculas(String numeroMatricula) throws Exception {
-				List<Matriculas> matriculas = matriculasRepository.findAllMatriculas();
-				List<GetMatriculaDTO> lista = modelMapper.map(matriculas, new TypeToken<List<GetMatriculaDTO>>() {
-				}.getType());
-				return lista;
-			} 
-		  
-		    public GetMatriculaDTO  consultarUmaMatricula(UUID idMatriculas) {
-		        Optional<Matriculas> registro = matriculasRepository.findById(idMatriculas);
+	    return usuarios;
+	}
 	
-		        if (registro.isPresent()) {
-		        	Matriculas matriculas = registro.get();
-		            return modelMapper.map(matriculas, GetMatriculaDTO.class);
-		        } else {
-		          
-					throw new RuntimeException("Matricula não encontrada"); // Lançar exceção quando não encontrada
-		        }
-		    }
-		    	    
-			  private int gerarNumeroMatricula() {       
-			        Integer ultimoNumero = matriculasRepository.findMaxNumeroMatricula();
-			        if (ultimoNumero == null) {
-			            ultimoNumero = 0;
-			        }
-			        return ultimoNumero + 1;
-			    }
-		  		  
-			  			  
-			//7 - Adicionar Usuários
-			  @Transactional
-			  public GetMatriculaFaturamentoPjDTO adicionarUsuariosMatricula(AdicionarUsuariosMatriculaDTO dto) {
-			      try {
-			          UUID idMatricula = dto.getIdMatricula();
-			          List<UUID> idsUsuarios = dto.getIdsUsuarios();
+	public GetMatriculaDTO excluirUsuariosMatricula(UUID matriculaId, List<UUID> usuarioIds) throws Exception {
+	    try {
+	        Matriculas matricula = matriculasRepository.findById(matriculaId)
+	                .orElseThrow(() -> new NoSuchElementException("Matricula não encontrada com o ID: " + matriculaId));
 
-			          Matriculas matricula = matriculasRepository.findById(idMatricula)
-			                  .orElseThrow(() -> new NotFoundException());
+	        if (usuarioIds != null && !usuarioIds.isEmpty()) {
+	            // Remove os usuários da matrícula
+	            matricula.getUsuarios().removeIf(usuario -> usuarioIds.contains(usuario.getId()));
+	            matriculasRepository.save(matricula);
+	        }
 
-			          for (UUID idUsuario : idsUsuarios) {
-			              Usuario usuario = usuarioRepository.findById(idUsuario)
-			                      .orElseThrow(() -> new NotFoundException());
+	        return modelMapper.map(matricula, GetMatriculaDTO.class);
+	    } catch (Exception ex) {
+	        // Trate a exceção de forma apropriada, registre logs, etc.
+	        throw new Exception("Erro ao excluir usuários da Matricula.", ex);
+	    }
+	}
 
-			              MatriculasUsuarios matriculasUsuarios = new MatriculasUsuarios();
-			              matriculasUsuarios.setMatricula(matricula);
-			              matriculasUsuarios.setUsuario(usuario);
-
-			              matricula.getMatriculasUsuarios().add(matriculasUsuarios);
-			          }
-
-			          matricula = matriculasRepository.save(matricula);
-
-			          return modelMapper.map(matricula, GetMatriculaFaturamentoPjDTO.class);
-			      } catch (Exception e) {
-			          // Log ou manipule a exceção conforme necessário
-			          throw new RuntimeException("Erro ao adicionar usuários à matrícula.", e);
-			      }
-			  }
-
-
-
-		}
+}

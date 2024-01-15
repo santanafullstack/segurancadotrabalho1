@@ -5,10 +5,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -46,7 +49,10 @@ public class Usuario {
 	@JoinColumn(name = "perfil_id", nullable = false) // O JoinColumn é para mapeamento de chave estrangeira//
 	private Perfil perfil;
 	
-	@OneToMany(mappedBy = "usuario")
-    private List<MatriculasUsuarios> matriculasUsuarios = new ArrayList<>();
+
+	@ManyToMany(mappedBy = "usuarios")
+    private List<Matriculas> matriculas;
+
+
 
 }

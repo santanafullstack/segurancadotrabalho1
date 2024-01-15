@@ -26,10 +26,7 @@ public class Turmas {
 	@Column(name = "idturmas")
 	private UUID idTurmas;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "datahoracriacao", nullable = true)
-	private Instant dataHoraCriacao;
-	
+
 	@Column(name = "numeroturma", nullable = true)
 	private Integer numeroTurma;
 	

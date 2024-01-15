@@ -15,5 +15,6 @@ private UUID idpessoafisica;
 		private String telefone_1;
 		private String telefone_2;
 		private String email;
+		private byte[] assinatura_pessoafisica;
 
 }

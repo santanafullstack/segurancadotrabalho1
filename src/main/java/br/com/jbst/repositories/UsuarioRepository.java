@@ -22,4 +22,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
 	public Usuario findByEmailAndSenha(
 			@Param("email") String email,
 			@Param("senha") String senha);
+	
+	
 }

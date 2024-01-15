@@ -5,8 +5,12 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import br.com.jbst.entities.Matriculas;
+import br.com.jbst.entities.Turmas;
+import br.com.jbst.entities.map.Funcionario;
+import br.com.jbst.entities.map.PessoaFisica;
 
 public interface MatriculasRepository extends JpaRepository<Matriculas, UUID > {
 
@@ -29,7 +33,18 @@ public interface MatriculasRepository extends JpaRepository<Matriculas, UUID > {
 	List<Matriculas> findAllMatricula();
 
     List<Matriculas> findByPessoafisica_Id(UUID idPessoaFisica);
+    
     List<Matriculas> findByFaturamento_Id(UUID idFaturamento);
+
+    @Query("SELECT m FROM Matriculas m JOIN m.usuarios u WHERE u.id = :usuarioId")
+    List<Matriculas> findByUsuarioId(@Param("usuarioId") UUID usuarioId);
+
+    boolean existsByFuncionarioAndTurmas(Funcionario funcionario, Turmas turma);
+    
+ // Change 'PessoaFisica' to 'pessoafisica' in the method name
+    boolean existsByPessoafisicaAndTurmas(PessoaFisica pessoafisica, Turmas turmas);
+
+    boolean existsByTurmasAndPessoafisica_Cpf(Turmas turma, String cpf);
 
 }
 
