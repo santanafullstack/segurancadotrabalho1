@@ -25,7 +25,14 @@ public class CursoService {
     @Autowired
 	ModelMapper modelMapper;
     
-    public GetCursoDTO criarCurso(PostCursoDTO dto) {
+    public GetCursoDTO criarCurso(PostCursoDTO dto) throws Exception {
+        // Verifica se o curso já foi registrado
+        if (cursoJaRegistrado(dto.getCurso())) {
+            // Curso já registrado, pode adicionar sua lógica de barramento aqui
+            throw new Exception("Este curso já foi registrado, por favor tente outro.");
+        }
+
+        // O curso ainda não foi registrado, pode continuar com o processo de criação
         Curso curso = modelMapper.map(dto, Curso.class);
         curso.setIdcurso(UUID.randomUUID());
         curso.setDataHoraCriacao(Instant.now());
@@ -34,6 +41,13 @@ public class CursoService {
         cursoRepository.save(curso);
         return modelMapper.map(curso, GetCursoDTO.class);
     }
+
+    private boolean cursoJaRegistrado(String nomeCurso) {
+        // Adicione aqui a lógica para verificar se o curso já foi registrado no seu repositório
+        // Por exemplo, usando o cursoRepository ou outra fonte de dados
+        return cursoRepository.existsByCurso(nomeCurso);
+    }
+
     
     public GetCursoDTO editarCurso(PutCursoDTO dto) {
 		UUID id = dto.getIdcurso();

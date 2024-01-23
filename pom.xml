@@ -59,8 +59,18 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-	
+
+
+		<dependency>
+			<groupId>br.com.jbst</groupId>
+			<artifactId>empresa</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>br.com.jbst</groupId>
+			<artifactId>Usuarios</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

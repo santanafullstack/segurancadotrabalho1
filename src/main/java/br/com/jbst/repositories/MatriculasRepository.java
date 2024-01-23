@@ -32,9 +32,9 @@ public interface MatriculasRepository extends JpaRepository<Matriculas, UUID > {
 	)
 	List<Matriculas> findAllMatricula();
 
-    List<Matriculas> findByPessoafisica_Id(UUID idPessoaFisica);
+    List<Matriculas> findByPessoafisica_Idpessoafisica(UUID idpessoafisica);
     
-    List<Matriculas> findByFaturamento_Id(UUID idFaturamento);
+    List<Matriculas> findByFaturamento_Idfaturamento(UUID idFaturamento);
 
     @Query("SELECT m FROM Matriculas m JOIN m.usuarios u WHERE u.id = :usuarioId")
     List<Matriculas> findByUsuarioId(@Param("usuarioId") UUID usuarioId);

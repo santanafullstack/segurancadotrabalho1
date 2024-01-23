@@ -31,7 +31,7 @@ public class PedidosController {
 	PedidosService  pedidosService;
 	
 	@PostMapping
-	public ResponseEntity<GetPedidosDTO> CriarCurso(@RequestBody PostPedidosDTO dto ){
+	public ResponseEntity<GetPedidosDTO> CriarCurso(@RequestBody PostPedidosDTO dto ) throws Exception{
 		return ResponseEntity.status(HttpStatus.CREATED).body(pedidosService.criarPedidos(dto));		
 
 	}

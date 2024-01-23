@@ -30,15 +30,25 @@ public class UnidadeDeTreinamentoService {
 	    
 	    @Autowired
 		ModelMapper modelMapper;
-	    
-	    public GetUnidadeDeTreinamentoDTO criarUnidadeDeTreinamento(PostUnidadeDeTreinamentoDTO dto) {
-	    	UnidadeDeTreinamento unidade = modelMapper.map(dto, UnidadeDeTreinamento.class);
-	    	unidade.setIdUnidadedetreinamento(UUID.randomUUID());
-	    	unidade.setDataHoraCriacao(Instant.now());
-	    	unidadeRepository.save(unidade);
-			return modelMapper.map(unidade, GetUnidadeDeTreinamentoDTO.class);
-			
+	    public GetUnidadeDeTreinamentoDTO criarUnidadeDeTreinamento(PostUnidadeDeTreinamentoDTO dto) throws Exception {
+	        // Verificar se a unidade de treinamento já existe com base no CNPJ
+	        if (unidadeJaRegistrada(dto.getCnpj())) {
+	            throw new Exception("Esta unidade de treinamento já está cadastrada no sistema. Por favor, verifique os dados fornecidos e tente novamente.");
+	        }
+
+	        // A unidade de treinamento não está registrada, continue com o processo de criação
+	        UnidadeDeTreinamento unidade = modelMapper.map(dto, UnidadeDeTreinamento.class);
+	        unidade.setIdUnidadedetreinamento(UUID.randomUUID());
+	        unidade.setDataHoraCriacao(Instant.now());
+	        unidadeRepository.save(unidade);
+	        return modelMapper.map(unidade, GetUnidadeDeTreinamentoDTO.class);
 	    }
+
+	    private boolean unidadeJaRegistrada(String cnpj) {
+	        // Consulta no banco de dados para verificar se já existe uma unidade de treinamento com o mesmo CNPJ
+	        return unidadeRepository.existsByCnpj(cnpj);
+	    }
+
 	    
 	    public GetUnidadeDeTreinamentoDTO editarUnidadeDeTreinamento(PutUnidadeDeTreinamentoDTO dto) {
 			UUID id = dto.getIdUnidadedetreinamento();

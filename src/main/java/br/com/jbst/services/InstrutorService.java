@@ -29,15 +29,31 @@ public class InstrutorService {
     
     @Autowired
     ModelMapper modelMapper;
-  
+    
     public GetInstrutorDTO criarInstrutor(PostInstrutorDTO dto) throws Exception {
-        
-    	Instrutor instrutor = modelMapper.map(dto, Instrutor.class);
+        // Verifica se o instrutor já foi registrado
+        if (instrutorJaRegistrado(dto.getInstrutor(), dto.getRg(), dto.getCpf())) {
+            // Instrutor já registrado, pode adicionar sua lógica de barramento aqui
+            throw new Exception("Este instrutor já foi registrado por favor tente outro.");
+        }
+
+        // O instrutor ainda não foi registrado, pode continuar com o processo de criação
+        Instrutor instrutor = modelMapper.map(dto, Instrutor.class);
         instrutor.setIdinstrutor(UUID.randomUUID());
         instrutor.setDataHoraCriacao(Instant.now());
         instrutorRepository.save(instrutor);
         return modelMapper.map(instrutor, GetInstrutorDTO.class);
     }
+
+    private boolean instrutorJaRegistrado(String nomeInstrutor, String rg, String cpf) {
+        // Adicione aqui a lógica para verificar se o instrutor já foi registrado no seu repositório
+        // Por exemplo, usando o instrutorRepository ou outra fonte de dados
+        return instrutorRepository.existsByNome(nomeInstrutor)
+                || instrutorRepository.existsByRg(rg)
+                || instrutorRepository.existsByCpf(cpf);
+    }
+
+
     
     public GetInstrutorDTO editarInstrutor(PutInstrutorDTO dto) throws Exception {
     	UUID id = dto.getIdinstrutor();

@@ -38,6 +38,10 @@ public class Turmas {
 	@Column(name = "datafim", nullable = true)
 	private Instant datafim;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "validadedocurso", nullable = true)
+	private Instant validadedocurso;
+	
 	@Column(name = "cargahoraria", nullable = true)
 	private String  cargahoraria;
 	

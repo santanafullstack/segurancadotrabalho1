@@ -31,7 +31,7 @@ public class FaturamentoControllers {
 	FaturamentoService  faturamentoService;
 	
 	@PostMapping
-	public ResponseEntity<GetFaturamentoDTO> CriarFaturamento(@RequestBody PostFaturamentoDTO dto ){
+	public ResponseEntity<GetFaturamentoDTO> CriarFaturamento(@RequestBody PostFaturamentoDTO dto ) throws Exception{
 		return ResponseEntity.status(HttpStatus.CREATED).body(faturamentoService.criarFaturamento(dto));		
 
 	}
@@ -68,4 +68,28 @@ public class FaturamentoControllers {
 					.body(faturamentoService.excluirFaturamento(id));
 
 	}
-}
+	
+
+
+	    @PostMapping("/fechar-manualmente/{id}")
+	    public ResponseEntity<String> fecharFaturaManualmente(@PathVariable UUID id) {
+	        try {
+	            faturamentoService.fecharFaturaManualmente(id);
+	            return ResponseEntity.ok("Fatura fechada manualmente com sucesso.");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body("Erro ao fechar manualmente a fatura: " + e.getMessage());
+	        }
+	    }
+	    
+	    @PostMapping("/abrir-manualmente/{id}")
+	    public ResponseEntity<String> abrirFaturaManualmente(@PathVariable UUID id) {
+	        try {
+	            faturamentoService.reabrirFatura(id);
+	            return ResponseEntity.ok("Fatura aberta manualmente com sucesso.");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body("Erro ao abrir manualmente a fatura: " + e.getMessage());
+	        }
+	    }
+	}

@@ -9,6 +9,7 @@ import br.com.jbst.entities.Pedidos;
 public interface PedidosRepository extends JpaRepository<Pedidos, UUID >{
 
 	
+    boolean existsByNumerodopedidoAndVendaAndNotafiscal(String numerodopedido, String venda, String notafiscal);
 
 	
 	

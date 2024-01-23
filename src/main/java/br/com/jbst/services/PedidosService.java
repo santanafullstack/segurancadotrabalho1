@@ -30,13 +30,23 @@ public class PedidosService {
     @Autowired
 	ModelMapper modelMapper;
     
-    public GetPedidosDTO criarPedidos(PostPedidosDTO dto) {
-    	Pedidos pedidos = modelMapper.map(dto, Pedidos.class);
-    	pedidos.setIdPedidos(UUID.randomUUID());
-    	pedidos.setDataHoraCriacao(Instant.now());
-    	pedidosRepository.save(pedidos);
-		return modelMapper.map(pedidos, GetPedidosDTO.class);
-		
+    public GetPedidosDTO criarPedidos(PostPedidosDTO dto) throws Exception {
+        // Verificar se já existe um pedido com os mesmos números
+        if (pedidoJaRegistrado(dto.getNumerodopedido(), dto.getVenda(), dto.getNotafiscal())) {
+            throw new Exception("Este pedido já foi registrado no sistema. Por favor, verifique os dados fornecidos e tente novamente.");
+        }
+
+        // O pedido não está registrado, continue com o processo de criação
+        Pedidos pedidos = modelMapper.map(dto, Pedidos.class);
+        pedidos.setIdPedidos(UUID.randomUUID());
+        pedidos.setDataHoraCriacao(Instant.now());
+        pedidosRepository.save(pedidos);
+        return modelMapper.map(pedidos, GetPedidosDTO.class);
+    }
+
+    private boolean pedidoJaRegistrado(String numerodopedido, String venda, String notafiscal) {
+        // Consulta no banco de dados para verificar se já existe um pedido com os mesmos números
+        return pedidosRepository.existsByNumerodopedidoAndVendaAndNotafiscal(numerodopedido, venda, notafiscal);
     }
     
     public GetPedidosDTO  editarPedidos(PutPedidosDTO dto) {

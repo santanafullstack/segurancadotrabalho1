@@ -31,7 +31,7 @@ public class UnidadeDeTreinamentoController {
 	UnidadeDeTreinamentoService unidade;
 	
 	@PostMapping
-	public ResponseEntity<GetUnidadeDeTreinamentoDTO> CriarUnidadeDeTreinamento(@RequestBody PostUnidadeDeTreinamentoDTO dto ){
+	public ResponseEntity<GetUnidadeDeTreinamentoDTO> CriarUnidadeDeTreinamento(@RequestBody PostUnidadeDeTreinamentoDTO dto ) throws Exception{
 		return ResponseEntity.status(HttpStatus.CREATED).body(unidade.criarUnidadeDeTreinamento(dto));		
 
 	}

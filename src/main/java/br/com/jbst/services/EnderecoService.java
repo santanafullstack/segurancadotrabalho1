@@ -30,15 +30,49 @@ public class EnderecoService {
 	    @Autowired
 		ModelMapper modelMapper;
 	    
-	    public GetEnderecoDTO criarEndereco(PostEnderecoDTO dto) {
-	    	Endereco endereco = modelMapper.map(dto, Endereco.class);
-	    	endereco.setIdEndereco(UUID.randomUUID());
-	    	endereco.setDataHoraCriacao(Instant.now());
-	    	endereco.setUnidadedetreinamento(unidadeRepository.findById(dto.getIdUnidadedetreinamento()).get());
-	    	enderecoRepository.save(endereco);
-			return modelMapper.map(endereco, GetEnderecoDTO.class);
-			
+	    public GetEnderecoDTO criarEndereco(PostEnderecoDTO dto) throws Exception {
+	        // Verificar se a unidade de treinamento já está associada a outro endereço
+	        if (unidadeJaAssociada(dto.getIdUnidadedetreinamento())) {
+	            throw new Exception("Esta unidade de treinamento já está associada a outro endereço, por favor cadastre uma nova unidade de Treinamento.");
+	        }
+
+	        // Verificar se o endereço já existe com base nos dados de PostEnderecoDTO
+	        if (enderecoJaRegistrado(dto)) {
+	            // Endereço com os mesmos dados já registrado, você pode adicionar sua lógica de bloqueio aqui
+	            throw new Exception("Este endereço já está cadastrado no sistema. Por favor, verifique os dados fornecidos e tente novamente.");
+	        }
+
+	        // O endereço não está registrado, continue com o processo de criação
+	        Endereco endereco = modelMapper.map(dto, Endereco.class);
+	        endereco.setIdEndereco(UUID.randomUUID());
+	        endereco.setDataHoraCriacao(Instant.now());
+	        endereco.setUnidadedetreinamento(unidadeRepository.findById(dto.getIdUnidadedetreinamento()).orElse(null));
+	        enderecoRepository.save(endereco);
+	        return modelMapper.map(endereco, GetEnderecoDTO.class);
 	    }
+
+	    private boolean unidadeJaAssociada(UUID idUnidade) {
+	        // Verificar se a unidade de treinamento já está associada a outro endereço
+	        return enderecoRepository.existsByUnidadedetreinamentoId(idUnidade);
+	    }
+
+	    private boolean enderecoJaRegistrado(PostEnderecoDTO dto) {
+	        // Consulta no banco de dados para verificar se já existe um endereço com os mesmos dados
+	        Optional<Endereco> enderecoExistente = enderecoRepository.findByCepAndLogradouroAndComplementoAndNumeroAndBairroAndLocalidadeAndUf(
+	                dto.getCep(),
+	                dto.getLogradouro(),
+	                dto.getComplemento(),
+	                dto.getNumero(),
+	                dto.getBairro(),
+	                dto.getLocalidade(),
+	                dto.getUf()
+	        );
+
+	        return enderecoExistente.isPresent();
+	    }
+
+
+	    
 	    
 	    public GetEnderecoDTO editarEndereco(PutEnderecoDTO dto) {
 			UUID id = dto.getIdEndereco();

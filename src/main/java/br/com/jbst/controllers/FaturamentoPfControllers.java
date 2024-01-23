@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jbst.DTO.RelatorioFaturamentoPfDto;
+import br.com.jbst.DTOs.GetFaturamentoDTO;
 import br.com.jbst.DTOs.GetFaturamentopfDto;
 import br.com.jbst.DTOs.PostFaturamentopfDto;
 import br.com.jbst.DTOs.PutFaturamentopfDto;
+import br.com.jbst.MatriculasDTO.GetFaturamentoPessoaFisicaDTO;
 import br.com.jbst.services.FaturamentopfServices;
 
 @RestController
@@ -32,8 +35,8 @@ public class FaturamentoPfControllers {
 	FaturamentopfServices  faturamentopfServices;
 	
 	@PostMapping
-	public ResponseEntity<GetFaturamentopfDto> CriarFaturamentoPf(@RequestBody PostFaturamentopfDto dto ){
-		return ResponseEntity.status(HttpStatus.CREATED).body(faturamentopfServices.criarFaturamentopf(dto));		
+	public ResponseEntity<GetFaturamentopfDto> CriarFaturamentoPf(@RequestBody PostFaturamentopfDto dto ) throws Exception{
+		return ResponseEntity.status(HttpStatus.CREATED).body(faturamentopfServices.criarFaturamentoPf(dto));		
 
 	}
 	
@@ -43,7 +46,7 @@ public class FaturamentoPfControllers {
 
 	}
 
-	@GetMapping
+	@GetMapping 
 	public  ResponseEntity<List<GetFaturamentopfDto>> ConsultarFaturamento() throws Exception{
 		return  ResponseEntity
 				.status(HttpStatus.OK)
@@ -51,8 +54,8 @@ public class FaturamentoPfControllers {
 	                                 }
 
 	@GetMapping("{id}")
-	public  ResponseEntity<GetFaturamentopfDto> consultarUmFaturamentoPf(@PathVariable("id") UUID id){
-		return ResponseEntity.status(HttpStatus.OK).body(faturamentopfServices.consultarUmFaturamentopf(id));
+	public  ResponseEntity<GetFaturamentopfDto> consultarUmFaturamentoPf(@PathVariable("id") UUID id) throws Exception{
+		return ResponseEntity.status(HttpStatus.OK).body(faturamentopfServices.consultarUmFaturamento(id));
 	}
 	
 	 @GetMapping("/calcularTotal/{id}")

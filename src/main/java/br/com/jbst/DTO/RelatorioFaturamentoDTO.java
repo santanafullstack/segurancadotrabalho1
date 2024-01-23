@@ -13,10 +13,19 @@ public class RelatorioFaturamentoDTO {
 	private UUID idfaturamento;
 	private Instant dataHoraCriacao;
 	private Integer numeroFaturamento;
-	private String empresa;
-	private String cnpj;
     private String data_inicio;
     private String data_fim;
+    private String venda;
+    private String notafiscal;
+    private String valor;
+    private String comprador;
+    private String telefone;
+    private String email;
+    private String responsavelfinanceiro;
+    private String telefonefinanceiro;
+    private String emailfinanceiro;
+    private String whatsapp;
+    private String observacoes;
     private List<RelatorioMatriculaDTO> matriculas;
 	private BigDecimal total;
 

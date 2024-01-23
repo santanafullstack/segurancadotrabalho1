@@ -32,7 +32,7 @@ public class EnderecoController {
 	
 	
 	@PostMapping
-	public ResponseEntity<GetEnderecoDTO> CriarEndereco(@RequestBody PostEnderecoDTO dto ){
+	public ResponseEntity<GetEnderecoDTO> CriarEndereco(@RequestBody PostEnderecoDTO dto ) throws Exception{
 		return ResponseEntity.status(HttpStatus.CREATED).body(enderecoService.criarEndereco(dto));		
 
 	}

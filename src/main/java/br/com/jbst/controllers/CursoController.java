@@ -32,7 +32,7 @@ public class CursoController {
 	CursoService  cursoService;
 	
 	@PostMapping
-	public ResponseEntity<GetCursoDTO> CriarCurso(@RequestBody PostCursoDTO dto ){
+	public ResponseEntity<GetCursoDTO> CriarCurso(@RequestBody PostCursoDTO dto ) throws Exception{
 		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.criarCurso(dto));		
 
 	}

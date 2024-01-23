@@ -1,6 +1,7 @@
 package br.com.jbst.MatriculasDTO;
 
 import java.time.Instant;
+
 import java.util.UUID;
 
 import lombok.Data;

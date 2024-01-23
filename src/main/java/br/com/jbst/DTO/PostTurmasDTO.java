@@ -13,6 +13,7 @@ public class PostTurmasDTO {
 	private UUID idUnidadeDeTreinamento;
 	private Instant datainicio;	
 	private Instant datafim;	
+	private Instant validadedocurso;
 	private String  cargahoraria;
 	private String modalidade;
 	private String status;

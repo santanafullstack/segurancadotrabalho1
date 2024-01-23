@@ -14,9 +14,10 @@ import lombok.Data;
 @Data
 public class GetFaturamentoDTO {
 	private UUID idfaturamento;
+	private UUID idpessoafisica;
+
     private Integer numeroFaturamento;
-	private String empresa;
-	private String cnpj;
+
 	@JsonSerialize(using = InstantSerializer.class)
     private Instant dataHoraCriacao;
 
@@ -28,4 +29,17 @@ public class GetFaturamentoDTO {
 	
     private List<RelatorioMatriculaDTO> matriculas;
    	private BigDecimal total;
+    private String venda;
+    private String notafiscal;
+    private String valor;
+    private String comprador;
+    private String telefone;
+    private String email;
+    private String responsavelfinanceiro;
+    private String telefonefinanceiro;
+    private String emailfinanceiro;
+    private String whatsapp;
+    private String observacoes;
+	private GetEmpresaDTOs empresa;
+
 }

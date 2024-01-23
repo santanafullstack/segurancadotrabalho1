@@ -2,6 +2,11 @@ package br.com.jbst.services;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 import br.com.jbst.DTO.RelatorioFaturamentoDTO;
 import br.com.jbst.DTOs.GetFaturamentoDTO;
@@ -16,7 +22,10 @@ import br.com.jbst.DTOs.PostFaturamentoDTO;
 import br.com.jbst.DTOs.PutFaturamentoDTO;
 import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.Matriculas;
+import br.com.jbst.entities.map.Empresa;
+import br.com.jbst.repositories.EmpresaRepository;
 import br.com.jbst.repositories.FaturamentoRepository;
+import jakarta.transaction.Transactional;
 
 
 
@@ -27,39 +36,115 @@ public class FaturamentoService {
 
     @Autowired
 	FaturamentoRepository faturamentoRepository;
+    
+    @Autowired
+	EmpresaRepository empresaRepository;
   
     @Autowired
 	ModelMapper modelMapper;
     
-    public GetFaturamentoDTO criarFaturamento(PostFaturamentoDTO dto) {
-    	Faturamento faturamento = modelMapper.map(dto, Faturamento.class);
-    	faturamento.setIdfaturamento(UUID.randomUUID());
-    	faturamento.setDataHoraCriacao(Instant.now());
-    	 int numeroFaturamento = gerarNumeroFaturamento();
-         faturamento.setNumeroFaturamento(numeroFaturamento);
-         
-    	faturamentoRepository.save(faturamento);
-		return modelMapper.map(faturamento, GetFaturamentoDTO.class);
+    public GetFaturamentoDTO criarFaturamento(PostFaturamentoDTO dto) throws Exception {
+        try {
+        	 ZoneId zone = ZoneId.systemDefault();
+
+             // Converter para ZonedDateTime
+             ZonedDateTime dataInicio = ZonedDateTime.ofInstant(dto.getData_inicio(), zone);
+
+             // Obter a data atual sem informações de fuso horário
+             LocalDate dataAtual = LocalDate.now(zone);
+
+             // Verificar se a data de início está entre o primeiro e o último dia do mês atual
+             LocalDate primeiroDiaDoMes = dataAtual.withDayOfMonth(1);
+             LocalDate ultimoDiaDoMes = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth());
+
+             // Ajuste para considerar apenas a data, ignorando o horário
+             LocalDate dataInicioAjustada = dataInicio.toLocalDate();
+
+             if (dataInicioAjustada.isBefore(primeiroDiaDoMes) || dataInicioAjustada.isAfter(ultimoDiaDoMes)) {
+                 throw new Exception("A data de início deve estar entre o primeiro e o último dia do mês atual. Data de início: " + dataInicio);
+             }
+             
+             
+             
+             
+            // Verificar se já foi feito um faturamento no período daquele mês para a empresa
+            if (existeFaturamentoNoPeriodo(dto.getIdEmpresa(), dto.getData_inicio(), dto.getData_fim())) {
+                throw new Exception("Já foi cadastrado um faturamento para a empresa no período especificado.");
+            }
+            // O faturamento está dentro do limite, continue com o processo de criação
+            Faturamento faturamento = modelMapper.map(dto, Faturamento.class);
+            faturamento.setIdfaturamento(UUID.randomUUID());
+            faturamento.setDataHoraCriacao(Instant.now());
+            int numeroFaturamento = gerarNumeroFaturamento();
+            faturamento.setNumeroFaturamento(numeroFaturamento);
+
+            // Definir a fatura como aberta
+            faturamento.setFaturaFechada(false);
+
+            // Obter a empresa pelo ID e definir no faturamento
+            Empresa empresa = empresaRepository.findById(dto.getIdEmpresa())
+                    .orElseThrow(() -> new RuntimeException("Empresa não encontrada com o ID: " + dto.getIdEmpresa()));
+
+            faturamento.setEmpresa(empresa);
+
+            // Salvar o faturamento
+            faturamentoRepository.save(faturamento);
+
+            return modelMapper.map(faturamento, GetFaturamentoDTO.class);
+        } catch (Exception e) {
+            // Log ou manipule a exceção conforme necessário
+            throw new RuntimeException("Erro ao criar faturamento.", e);
+        }
     }
-		  private int gerarNumeroFaturamento() {       
-	 	        Integer ultimoNumero = faturamentoRepository.findMaxNumeroFaturamento();
-	 	        if (ultimoNumero == null) {
-	 	            ultimoNumero = 0;
-	 	        }
-	 	        return ultimoNumero + 1;
-	 	    }
-    
+
+
+    private boolean existeFaturamentoNoPeriodo(UUID idEmpresa, Instant dataInicio, Instant dataFim) {
+        // Consulta no banco de dados para verificar se já existe um faturamento
+        // no período daquele mês para a empresa
+        return faturamentoRepository.existsFaturamentoNoPeriodo(idEmpresa, dataInicio, dataFim);
+    }
+
+    private int gerarNumeroFaturamento() {       
+        Integer ultimoNumero = faturamentoRepository.findMaxNumeroFaturamento();
+        if (ultimoNumero == null) {
+            ultimoNumero = 0;
+        }
+        return ultimoNumero + 1;
+    }
+
 		
     
-    
     public GetFaturamentoDTO editarFaturamento(PutFaturamentoDTO dto) {
-		UUID id = dto.getIdfaturamento();
-		Faturamento faturamento = faturamentoRepository.findById(id).orElseThrow();
-		modelMapper.map(dto, faturamento );
-		faturamento.setDataHoraCriacao(Instant.now());
-		faturamentoRepository.save(faturamento);
-		return modelMapper.map(faturamento, GetFaturamentoDTO.class);
-	}
+        UUID idFaturamento = dto.getIdfaturamento();
+        
+        // Busca o faturamento no repositório
+        Faturamento faturamento = faturamentoRepository.findById(idFaturamento).orElseThrow();
+
+        // Mapeia os campos do DTO para o objeto Faturamento
+        modelMapper.map(dto, faturamento);
+
+        // Obtém o ID da empresa do DTO
+        UUID idEmpresa = dto.getIdEmpresa();
+
+        // Verifica se foi fornecido um ID de empresa válido
+        if (idEmpresa != null) {
+            // Busca a empresa no repositório
+            Empresa empresa = empresaRepository.findById(idEmpresa).orElseThrow();
+
+            // Atribui a empresa ao faturamento
+            faturamento.setEmpresa(empresa);
+        }
+
+        // Define a data de criação para o momento atual
+        faturamento.setDataHoraCriacao(Instant.now());
+
+        // Salva as alterações no repositório
+        faturamentoRepository.save(faturamento);
+
+        // Mapeia o objeto Faturamento para um DTO de resposta
+        return modelMapper.map(faturamento, GetFaturamentoDTO.class);
+    }
+
 
     
     public List<GetFaturamentoDTO> consultarFaturamentos(String data_inicio) throws Exception {
@@ -120,8 +205,39 @@ public class FaturamentoService {
             throw new RuntimeException("Faturamento não encontrado");
         }
     }
+    
+    @Transactional
+    public void fecharFaturaManualmente(UUID idFaturamento) {
+        Faturamento faturamento = faturamentoRepository.findById(idFaturamento)
+                .orElseThrow();
 
+        // Feche a fatura manualmente
+        faturamento.setFaturaFechada(true);
+
+        // Atualize a entidade no repositório
+        faturamentoRepository.save(faturamento);
+
+        // Outras operações relacionadas, se necessário...
+    }
+    
+    @Transactional
+    public void reabrirFatura(UUID idFaturamento) {
+        Faturamento faturamento = faturamentoRepository.findById(idFaturamento)
+                .orElseThrow();
+
+        if (!faturamento.isFaturaFechada()) {
+            throw new IllegalStateException("A fatura não está fechada para reabrir.");
+        }
+
+        faturamento.setFaturaFechada(false);
+
+        // Atualize outras propriedades ou execute ações necessárias ao reabrir a fatura
+
+        faturamentoRepository.save(faturamento);
+    }
 }
+
+
 
 
 
