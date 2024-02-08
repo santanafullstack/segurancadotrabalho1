@@ -69,6 +69,18 @@ public class Faturamento {
     @Column(name = "emailfinanceiro", length = 50, nullable = false)
     private String emailfinanceiro;
 
+    @Column(name = "data_de_pagamento", length = 100, nullable = false)
+    private Instant data_de_pagamento;
+	
+	
+    @Column(name = "parcelas", length = 50, nullable = false)
+    private String parcelas;
+	
+	
+    @Column(name = "forma_de_pagamento", length = 50, nullable = false)
+    private String forma_de_pagamento;
+
+    
     @Column(name = "observacoes", length = 1000, nullable = false)
     private String observacoes;
 
@@ -84,6 +96,10 @@ public class Faturamento {
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
+    
+    // Adicionando a lista de cobranças associadas a um faturamento
+    @OneToMany(mappedBy = "faturamento")
+    private List<Cobranca> cobrancas;
 
     public void calcularTotal() {
         BigDecimal totalValue = BigDecimal.ZERO;

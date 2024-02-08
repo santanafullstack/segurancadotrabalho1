@@ -21,6 +21,6 @@ public class PostMatriculaDTO {
 	private String venda;
 	private BigDecimal valor;
 	private String status;
-	
+    private String observacoes;
 	
 }

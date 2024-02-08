@@ -16,6 +16,7 @@ public class GetMatriculaFaturamentoPfDTO {
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
+	private String observacoes;
 	private GetTurmasDTO turmas;
 	private List<RelatorioMatriculaDTO> matriculas;
 	private BigDecimal total;

@@ -78,6 +78,28 @@ public ResponseEntity<GetTurmasDTO> excluirInstrutor(
     GetTurmasDTO turmasDTO = turmasService.excluirInstrutor(idTurmas, idInstrutor);
     return ResponseEntity.ok(turmasDTO);
 }
+
+@PostMapping("/abrir/{turmaId}")
+public ResponseEntity<String> abrirTurma(@PathVariable UUID turmaId) {
+    try {
+        turmasService.turmaAberta(turmaId);
+        return ResponseEntity.ok("Turma aberta com sucesso.");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erro ao abrir a turma: " + e.getMessage());
+    }
+}
+
+@PostMapping("/fechar/{turmaId}")
+public ResponseEntity<String> fecharTurma(@PathVariable UUID turmaId) {
+    try {
+        turmasService.turmaFechada(turmaId);
+        return ResponseEntity.ok("Turma fechada com sucesso.");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erro ao fechar a turma: " + e.getMessage());
+    }
+}
 }
 
 

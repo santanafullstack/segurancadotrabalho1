@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTO.PostCursoDTO;
 import br.com.jbst.DTO.PutCursoDTO;
@@ -53,7 +54,6 @@ public class CursoService {
 		UUID id = dto.getIdcurso();
 		Curso curso = cursoRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, curso );
-    	curso.setDataHoraCriacao(Instant.now());
 		cursoRepository.save(curso);
 		return modelMapper.map(curso, GetCursoDTO.class);
 	}

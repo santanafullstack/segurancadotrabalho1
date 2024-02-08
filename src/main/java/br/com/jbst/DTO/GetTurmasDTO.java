@@ -30,6 +30,7 @@ public class GetTurmasDTO {
 	private String diasespecificos;
 	private String tipo;
 	private String validade;
+	private String validadedocurso;
 	private String dia;
 	private String mes;
 	private String ano;

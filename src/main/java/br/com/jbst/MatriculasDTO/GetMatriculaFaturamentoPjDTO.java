@@ -13,6 +13,7 @@ public class GetMatriculaFaturamentoPjDTO {
 	private String venda;
 	private BigDecimal valor;
 	private String status;
+	private String observacoes;
 	private String tipo_de_pagamento;
 	private GetPessoaFisicaDTO pessoafisica;
 	private GetTurmasDTO turmas;

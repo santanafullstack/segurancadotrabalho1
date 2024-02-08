@@ -52,6 +52,8 @@ public class FaturamentoPfControllers {
 				.status(HttpStatus.OK)
 				.body(faturamentopfServices.consultarFaturamentospf(toString()));
 	                                 }
+	
+
 
 	@GetMapping("{id}")
 	public  ResponseEntity<GetFaturamentopfDto> consultarUmFaturamentoPf(@PathVariable("id") UUID id) throws Exception{
@@ -60,7 +62,7 @@ public class FaturamentoPfControllers {
 	
 	 @GetMapping("/calcularTotal/{id}")
 		public  ResponseEntity<RelatorioFaturamentoPfDto> CalcularEAtualizarTotal(@PathVariable("id") UUID id){
-			return ResponseEntity.status(HttpStatus.OK).body(faturamentopfServices.calcularEAtualizarTotal(id));
+			return ResponseEntity.status(HttpStatus.OK).body(((FaturamentopfServices) faturamentopfServices).calcularEAtualizarTotal(id));
 
 		}
 
@@ -71,4 +73,24 @@ public class FaturamentoPfControllers {
 					.body(faturamentopfServices.excluirFaturamentopf(id));
 
 	}
+	
+	@PutMapping("/fechar-fatura/{idFaturamento}")
+    public ResponseEntity<String> fecharFaturaManualmente(@PathVariable UUID idFaturamento) {
+        try {
+            faturamentopfServices.fecharFaturaManualmente(idFaturamento);
+            return new ResponseEntity<>("Fatura fechada manualmente com sucesso.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erro ao fechar fatura manualmente: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/reabrir-fatura/{idFaturamento}")
+    public ResponseEntity<String> reabrirFatura(@PathVariable UUID idFaturamento) {
+        try {
+            faturamentopfServices.reabrirFatura(idFaturamento);
+            return new ResponseEntity<>("Fatura reaberta com sucesso.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erro ao reabrir fatura: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

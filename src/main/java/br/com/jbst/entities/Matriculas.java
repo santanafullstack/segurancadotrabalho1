@@ -51,6 +51,9 @@ public class Matriculas {
 
     @Column(name = "tipo_de_pagamento", length = 100, nullable = false)
     private String tipo_de_pagamento;
+    
+    @Column(name = "observacoes", length = 1000, nullable = true)
+    private String observacoes;
 
     @ManyToOne
     @JoinColumn(name = "id_turmas", nullable = true)
@@ -89,4 +92,17 @@ public class Matriculas {
 
     @Column(name = "fatura_fechada", nullable = false)
     private boolean faturaFechada;
+
+	@Column(name = "pedido_fechado", nullable = false)
+	private boolean pedidoFechado;
+    
+	
+	public void bloquearMatriculas() {
+	    // Verifica se a turma associada está fechada
+	    if (this.getTurmas().getStatus().equals("Fechada")) {
+	        throw new IllegalStateException("Não é possível adicionar matrículas a uma turma fechada.");
+	    }
+
+	}
+
 }

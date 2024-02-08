@@ -99,8 +99,6 @@ public class FaturamentoService {
 
 
     private boolean existeFaturamentoNoPeriodo(UUID idEmpresa, Instant dataInicio, Instant dataFim) {
-        // Consulta no banco de dados para verificar se já existe um faturamento
-        // no período daquele mês para a empresa
         return faturamentoRepository.existsFaturamentoNoPeriodo(idEmpresa, dataInicio, dataFim);
     }
 
@@ -124,16 +122,7 @@ public class FaturamentoService {
         modelMapper.map(dto, faturamento);
 
         // Obtém o ID da empresa do DTO
-        UUID idEmpresa = dto.getIdEmpresa();
 
-        // Verifica se foi fornecido um ID de empresa válido
-        if (idEmpresa != null) {
-            // Busca a empresa no repositório
-            Empresa empresa = empresaRepository.findById(idEmpresa).orElseThrow();
-
-            // Atribui a empresa ao faturamento
-            faturamento.setEmpresa(empresa);
-        }
 
         // Define a data de criação para o momento atual
         faturamento.setDataHoraCriacao(Instant.now());

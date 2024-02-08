@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.com.jbst.entities.Faturamento;
+import br.com.jbst.entities.Pedidos;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -59,7 +60,8 @@ private List<Funcionario> funcionarios;
 @OneToMany(mappedBy = "empresa")
 private List<Faturamento> faturamentos;
 
-
+@OneToMany(mappedBy = "empresa") // 1 Empresa tem muitos Pedidos
+private List<Pedidos> pedidos;
 
 public Object getId() {
 	// TODO Auto-generated method stub

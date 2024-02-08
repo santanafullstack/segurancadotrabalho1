@@ -8,14 +8,19 @@ import lombok.Data;
 
 @Data
 public class GetPessoaFisicaDTO {
-private UUID idpessoafisica;
-	    private Instant dataHoraCriacao;
-		private String pessoafisica;
-		private String rg;
-	    private String cpf;
-		private String telefone_1;
-		private String telefone_2;
-		private String email;
-		private byte[] assinatura_pessoafisica;
+	private UUID idpessoafisica;
+	private Instant dataHoraCriacao;
+	private String pessoafisica;
+	private String rg;
+	private String cpf;
+	private String telefone_1;
+	private String telefone_2;
+	private String email;
+	private byte[] assinatura_pessoafisica;
+
+	public void setNome(Object nome) {
+		// TODO Auto-generated method stub
+
+	}
 
 }

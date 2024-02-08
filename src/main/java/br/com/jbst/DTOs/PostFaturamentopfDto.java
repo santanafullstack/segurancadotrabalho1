@@ -21,8 +21,10 @@ public class PostFaturamentopfDto {
     private String telefonefinanceiro;
     private String whatsapp;
     private String emailfinanceiro;
+    private Instant data_de_pagamento;
+	private String parcelas;
+	private String forma_de_pagamento;
     private String observacoes;
-
     public UUID getIdpessoafisica() {
         return idpessoafisica;
     }

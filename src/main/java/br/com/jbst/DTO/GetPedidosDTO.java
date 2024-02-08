@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import br.com.jbst.DTOs.GetEmpresaDTOs;
 import br.com.jbst.config.InstantSerializer;
 import lombok.Data;
 
@@ -17,8 +18,6 @@ public class GetPedidosDTO {
 	private UUID idPedidos;
 	@JsonSerialize(using = InstantSerializer.class)
 	private Instant dataHoraCriacao;
-	private String nomefantasia;
-	private String cnpj;
 	private String numerodopedido;
 	private String venda;
 	private String notafiscal;
@@ -30,5 +29,15 @@ public class GetPedidosDTO {
     private String email;
     private List<GetMatriculaDTO> matricula;
 	private BigDecimal total;
+	private GetEmpresaDTOs empresa;
+	private boolean pedidoFechado;
+	private Instant data_de_pagamento;
+	private String responsavelfinanceiro;
+	private String telefonefinanceiro;
+	private String whatsapp;
+	private String emailfinanceiro;
+	private String parcelas;
+	private String forma_de_pagamento;
+    private String observacoes;
 
 }

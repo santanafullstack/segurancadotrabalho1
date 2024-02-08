@@ -19,4 +19,5 @@ public class PutMatriculaDTO {
 	private String venda;
 	private String valor;
 	private String status;
+    private String observacoes;
 }

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.jbst.DTO.GetFormacaoDTO;
 import br.com.jbst.DTO.PostFormacaoDTO;
 import br.com.jbst.DTO.PutFormacaoDTO;
-
 import br.com.jbst.services.FormacaoService;
 
 @RestController

@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.jbst.DTOs.GetEmpresaDTOs;
+import br.com.jbst.entities.map.Empresa;
 import lombok.Data;
 
 
@@ -28,5 +30,6 @@ public class RelatorioFaturamentoDTO {
     private String observacoes;
     private List<RelatorioMatriculaDTO> matriculas;
 	private BigDecimal total;
+	private GetEmpresaDTOs empresa;
 
 }

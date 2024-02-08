@@ -15,4 +15,6 @@ public class PostMatriculaFaturamentoPfDTO {
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
+    private String observacoes;
+
 }

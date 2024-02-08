@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.jbst.DTO.GetCursoDTO;
 import br.com.jbst.DTO.PostCursoDTO;
 import br.com.jbst.DTO.PutCursoDTO;
-
 import br.com.jbst.services.CursoService;
 
 @RestController

@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.jbst.MatriculasDTO.GetPessoaFisicaDTO;
 import br.com.jbst.entities.map.PessoaFisica;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +25,6 @@ import lombok.Data;
 @Entity
 @Table(name = "faturamentopf")
 @NamedEntityGraph(name = "faturamentopf-with-pessoaFisica", attributeNodes = @NamedAttributeNode("pessoaFisica"))
-
 public class FaturamentoPf {
 
     @Id
@@ -50,12 +50,57 @@ public class FaturamentoPf {
 
     @Column(name = "venda", length = 50, nullable = false)
     private String venda;
+    
+    @Column(name = "valor", length = 50, nullable = false)
+    private String valor;
+    
+	@Column(name = "notafiscal", nullable = false)
+	private String notafiscal;
 
     @Column(name = "observacoes", length = 1000, nullable = false)
     private String observacoes;
 
     @Column(name = "fatura_fechada", nullable = false)
     private boolean faturaFechada;
+    
+    
+    @Column(name = "comprador", length = 50, nullable = true)
+    private String comprador;
+
+    @Column(name = "telefone", length = 50, nullable = false)
+    private String telefone;
+
+    @Column(name = "email", length = 50, nullable = false)
+    private String email;
+
+    @Column(name = "responsavelfinanceiro", length = 50, nullable = false)
+    private String responsavelfinanceiro;
+
+    @Column(name = "telefonefinanceiro", length = 50, nullable = false)
+    private String telefonefinanceiro;
+
+    @Column(name = "whatsapp", length = 50, nullable = false)
+    private String whatsapp;
+
+    @Column(name = "emailfinanceiro", length = 50, nullable = false)
+    private String emailfinanceiro;
+
+
+    @Column(name = "data_de_pagamento", length = 100, nullable = false)
+    private Instant data_de_pagamento;
+	
+	
+    @Column(name = "parcelas", length = 50, nullable = false)
+    private String parcelas;
+	
+	
+    @Column(name = "forma_de_pagamento", length = 50, nullable = false)
+    private String forma_de_pagamento;
+    
+    // Corrigindo o mapeamento da coleção de cobranças
+    @OneToMany(mappedBy = "faturamentoPf")
+    private List<Cobranca> cobrancas;
+
 
     @Column(name = "total", nullable = true)
     private BigDecimal total;
@@ -63,32 +108,7 @@ public class FaturamentoPf {
     @OneToMany(mappedBy = "faturamentopf")
     private List<Matriculas> matriculas;
 
-    public void calcularTotal() {
-        BigDecimal totalValue = BigDecimal.ZERO;
+   
 
-        if (matriculas != null && !matriculas.isEmpty()) {
-            for (Matriculas matricula : matriculas) {
-                totalValue = totalValue.add(matricula.getValor());
-            }
-        }
-
-        this.total = totalValue;
-    }
-
-    public boolean isFaturaAberta() {
-        Instant dataAtual = Instant.now();
-        return dataAtual.isAfter(this.data_inicio) && dataAtual.isBefore(this.data_fim);
-    }
-
-    public void fecharMatriculasAposDataFim() {
-        Instant dataAtual = Instant.now();
-        if (dataAtual.isAfter(this.data_fim) && !this.faturaFechada && this.matriculas != null && !this.matriculas.isEmpty()) {
-            for (Matriculas matricula : this.matriculas) {
-                matricula.setFaturaFechada(true);
-            }
-            this.faturaFechada = true;
-        }
-    }
-
-
+	
 }

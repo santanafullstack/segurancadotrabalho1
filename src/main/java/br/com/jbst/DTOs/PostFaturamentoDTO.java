@@ -19,11 +19,13 @@ public class PostFaturamentoDTO {
     private String telefonefinanceiro;
     private String whatsapp;
     private String emailfinanceiro;
+    private Instant data_de_pagamento;
+	private String parcelas;
+	private String forma_de_pagamento;
     private String observacoes;
-    private UUID idEmpresa;  // Adicionando o ID da empresa
+    private UUID idEmpresa;  
 	public UUID getIdEmpresa() {
-		// TODO Auto-generated method stub
-		return null;
+        return idEmpresa;
 	}
 
 }

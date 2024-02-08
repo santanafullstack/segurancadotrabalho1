@@ -1,6 +1,8 @@
 package br.com.jbst.DTO;
 
 
+import java.math.BigDecimal;
+
 import br.com.jbst.MatriculasDTO.GetPessoaFisicaDTO;
 import lombok.Data;
 
@@ -8,7 +10,7 @@ import lombok.Data;
 public class RelatorioMatriculaDTO {
 	
     private Integer numeroMatricula;
-	private String valor;
+    private BigDecimal valor;
 	private String venda;
 	private String status;
 	private GetPessoaFisicaDTO pessoafisica;

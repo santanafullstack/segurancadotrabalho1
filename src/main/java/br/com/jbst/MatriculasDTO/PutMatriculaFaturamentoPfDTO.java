@@ -10,12 +10,15 @@ public class PutMatriculaFaturamentoPfDTO {
 	
 	
 	private UUID idMatricula;
-	private UUID idpessoafisica;
 	private UUID idTurmas;
-	private UUID idfaturamentopf;
 	private String venda;
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
+    private String observacoes;
+	public Object getIdFuncionario() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

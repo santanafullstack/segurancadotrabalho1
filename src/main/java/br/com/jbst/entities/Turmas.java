@@ -3,6 +3,8 @@ import java.time.Instant;
 
 import java.util.List;
 import java.util.UUID;
+
+import br.com.jbst.entities.map.Empresa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -90,6 +92,12 @@ public class Turmas {
 	@Column(name = "quintodia", nullable = true)
 	private String quintodia;
     
+	@Column(name = "turma_fechada", nullable = false)
+	private boolean turmaFechada;
+	
+	@Column(name = "matriculas_bloqueadas", nullable = false)
+	private boolean matriculasBloqueadas;
+	
     @ManyToOne
     @JoinColumn(name = "idunidadedetreinamento", referencedColumnName = "idUnidadedetreinamento", nullable = true)
     private UnidadeDeTreinamento unidadeDeTreinamento;
@@ -110,5 +118,25 @@ public class Turmas {
 	        inverseJoinColumns = @JoinColumn(name = "idinstrutor", nullable = true )
 	    )
 	    private List<Instrutor> instrutores;
+
+
+	public Empresa getEmpresa() {
+		return null;
+	}
+	
+	
+	public void turmaAberta() {
+        if (this.turmaFechada) {
+            this.turmaFechada = false;
+            this.matriculasBloqueadas = false;
+        }
+    }
+
+    public void turmaFechada() {
+        if (!this.turmaFechada) {
+            this.turmaFechada = true;
+            this.matriculasBloqueadas = true;
+        }
+    }
 	
 }

@@ -78,21 +78,21 @@ public class MatriculasController {
 	    return ResponseEntity.status(HttpStatus.CREATED).body(matriculaService.criarMatriculasPedidos(idPedidos, dto));
 	}
 
-    @PutMapping("/editarMatricula-pedidos/{idPedidos}")
-    public ResponseEntity<GetMatriculaPedidosDTO> editarMatriculaPedidos(
-            @PathVariable UUID idPedidos,
-            @RequestParam UUID idMatricula,
-            @RequestBody PutMatriculaPedidosDTO dto
-    ) {
-        try {
-            GetMatriculaPedidosDTO resultado = matriculaService.editarMatriculaPedidos(idPedidos, idMatricula, dto);
-            return ResponseEntity.ok(resultado);
-        } catch (MappingNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+
+	    @PutMapping("/{idMatricula}")
+	    public ResponseEntity<GetMatriculaPedidosDTO> editarMatriculaPedidos(
+	            @PathVariable UUID idMatricula,
+	            @RequestBody PutMatriculaPedidosDTO dto) {
+	        try {
+	            GetMatriculaPedidosDTO matriculaAtualizada = matriculaService.editarMatriculasPedidos(idMatricula, dto);
+	            return ResponseEntity.ok(matriculaAtualizada);
+	        } catch (Exception e) {
+	            // Trate a exceção conforme necessário
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+	
+
 
 
 

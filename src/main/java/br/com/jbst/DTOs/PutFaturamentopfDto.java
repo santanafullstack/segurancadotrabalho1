@@ -9,9 +9,6 @@ import lombok.Data;
 public class PutFaturamentopfDto {
 	
 	private UUID idfaturamentopf;
-	private UUID idpessoafisica;
-    private Instant data_inicio;
-    private Instant data_fim;
     private String venda;
     private String notafiscal;
     private String valor;
@@ -22,5 +19,9 @@ public class PutFaturamentopfDto {
     private String telefonefinanceiro;
     private String whatsapp;
     private String emailfinanceiro;
+    private Instant data_de_pagamento;
+	private String parcelas;
+	private String forma_de_pagamento;
     private String observacoes;
+    
 }

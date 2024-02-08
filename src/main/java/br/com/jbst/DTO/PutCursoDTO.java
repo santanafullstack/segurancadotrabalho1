@@ -9,7 +9,6 @@ import lombok.Data;
 public class PutCursoDTO {
 	
 	private UUID idcurso;
-	private Instant dataHoraCriacao;
     private String curso;
 	private String status;
 	private String descricao;

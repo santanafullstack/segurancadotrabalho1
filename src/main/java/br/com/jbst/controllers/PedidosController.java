@@ -20,6 +20,7 @@ import br.com.jbst.DTO.GetPedidosDTO;
 import br.com.jbst.DTO.PostPedidosDTO;
 import br.com.jbst.DTO.PutPedidosDTO;
 import br.com.jbst.DTO.RelatorioPedidosDTO;
+import br.com.jbst.entities.Pedidos;
 import br.com.jbst.services.PedidosService;
 
 @RestController
@@ -71,7 +72,34 @@ public class PedidosController {
 		}
 
 	
-	  
+
+	 @PutMapping("/fechar/{idPedido}")
+	    public ResponseEntity<String> fecharPedidoManualmente(@PathVariable UUID idPedido) {
+	        try {
+	            pedidosService.fecharPedidoManualmente(idPedido);
+	            return new ResponseEntity<>("Pedido fechado com sucesso", HttpStatus.OK);
+	        } catch (IllegalArgumentException e) {
+	            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+	        } catch (Exception e) {
+	            return new ResponseEntity<>("Erro ao fechar o pedido", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+
+	    @PutMapping("/reabrir/{idPedido}")
+	    public ResponseEntity<String> reabrirPedido(@PathVariable UUID idPedido) {
+	        try {
+	            pedidosService.reabrirPedido(idPedido);
+	            return ResponseEntity.ok("Pedido reaberto com sucesso.");
+	        } catch (IllegalArgumentException e) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	        } catch (IllegalStateException e) {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao reabrir o pedido.");
+	        }
+	    }
+
+  
 
 	}
 

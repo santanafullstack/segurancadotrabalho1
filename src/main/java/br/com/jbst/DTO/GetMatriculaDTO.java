@@ -23,6 +23,7 @@ public class GetMatriculaDTO {
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
+	private String observacoes;
 	private BigDecimal total;
 	private List <GetEvidenciasDTOs> evidencias;
 	private GetPessoaFisicaDTO pessoafisica;

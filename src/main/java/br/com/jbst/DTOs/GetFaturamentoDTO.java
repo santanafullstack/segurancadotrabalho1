@@ -14,7 +14,6 @@ import lombok.Data;
 @Data
 public class GetFaturamentoDTO {
 	private UUID idfaturamento;
-	private UUID idpessoafisica;
 
     private Integer numeroFaturamento;
 
@@ -40,6 +39,15 @@ public class GetFaturamentoDTO {
     private String emailfinanceiro;
     private String whatsapp;
     private String observacoes;
+	private String parcelas;
+	private String forma_de_pagamento;
 	private GetEmpresaDTOs empresa;
+    private String statusFatura;
+	private boolean faturaFechada;
+    public GetFaturamentoDTO toDTO() {
+        GetFaturamentoDTO dto = new GetFaturamentoDTO();
+        dto.setStatusFatura(this.faturaFechada ? "Fechada" : "Aberta");
+        return dto;
+    }
 
 }

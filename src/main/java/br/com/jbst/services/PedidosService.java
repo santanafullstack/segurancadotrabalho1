@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,10 @@ import br.com.jbst.DTO.PutPedidosDTO;
 import br.com.jbst.DTO.RelatorioPedidosDTO;
 import br.com.jbst.entities.Matriculas;
 import br.com.jbst.entities.Pedidos;
+import br.com.jbst.entities.map.Empresa;
+import br.com.jbst.repositories.EmpresaRepository;
 import br.com.jbst.repositories.PedidosRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -26,34 +31,48 @@ public class PedidosService {
 
     @Autowired
 	PedidosRepository pedidosRepository;
+    
+    @Autowired
+  	EmpresaRepository empresaRepository;
   
     @Autowired
 	ModelMapper modelMapper;
     
+    
+
+
+    @Transactional(rollbackFor = Exception.class)
     public GetPedidosDTO criarPedidos(PostPedidosDTO dto) throws Exception {
-        // Verificar se já existe um pedido com os mesmos números
         if (pedidoJaRegistrado(dto.getNumerodopedido(), dto.getVenda(), dto.getNotafiscal())) {
             throw new Exception("Este pedido já foi registrado no sistema. Por favor, verifique os dados fornecidos e tente novamente.");
         }
 
-        // O pedido não está registrado, continue com o processo de criação
         Pedidos pedidos = modelMapper.map(dto, Pedidos.class);
         pedidos.setIdPedidos(UUID.randomUUID());
         pedidos.setDataHoraCriacao(Instant.now());
+        pedidos.setPedidoFechado(false);
+        
+        // Obter a empresa pelo ID e definir no faturamento
+        Empresa empresa = empresaRepository.findById(dto.getIdEmpresa())
+                .orElseThrow(() -> new RuntimeException("Empresa não encontrada com o ID: " + dto.getIdEmpresa()));
+
+        pedidos.setEmpresa(empresa);
+        
         pedidosRepository.save(pedidos);
         return modelMapper.map(pedidos, GetPedidosDTO.class);
     }
 
+    
     private boolean pedidoJaRegistrado(String numerodopedido, String venda, String notafiscal) {
-        // Consulta no banco de dados para verificar se já existe um pedido com os mesmos números
         return pedidosRepository.existsByNumerodopedidoAndVendaAndNotafiscal(numerodopedido, venda, notafiscal);
     }
-    
-    public GetPedidosDTO  editarPedidos(PutPedidosDTO dto) {
+
+
+
+	public GetPedidosDTO  editarPedidos(PutPedidosDTO dto) {
 		UUID id = dto.getIdPedidos();
 		Pedidos pedidos = pedidosRepository.findById(id).orElseThrow();
 		modelMapper.map(dto, pedidos );
-    	pedidos.setDataHoraCriacao(Instant.now());
 		pedidosRepository.save(pedidos);
 		return modelMapper.map(pedidos, GetPedidosDTO.class);
 	}
@@ -121,6 +140,36 @@ public class PedidosService {
 
 
 
+    @Transactional
+    public void fecharPedidoManualmente(UUID idPedido) {
+        // Buscar o pedido pelo ID
+        Pedidos pedido = pedidosRepository.findById(idPedido)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
+
+        // Fechar o pedido manualmente
+        pedido.setPedidoFechado(true);
+
+        // Salvar as alterações no repositório
+        pedidosRepository.save(pedido);
+    }
+
+    @Transactional
+    public void reabrirPedido(UUID idPedido) {
+        Pedidos pedido = pedidosRepository.findById(idPedido)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
+
+        if (!pedido.isPedidoFechado()) {
+            throw new IllegalStateException("O pedido não está fechado para reabrir.");
+        }
+
+        // Reabra o pedido
+        pedido.setPedidoFechado(false);
+        pedido.setMatriculasBloqueadas(false);
+
+        // Atualize outras propriedades ou execute ações necessárias ao reabrir o pedido
+
+        pedidosRepository.save(pedido);
+    }
 
     }
 

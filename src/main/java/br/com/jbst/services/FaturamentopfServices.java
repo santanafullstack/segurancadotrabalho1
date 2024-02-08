@@ -16,6 +16,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.jbst.DTO.GetFuncionarioDTO;
+import br.com.jbst.DTO.GetTurmasDTO;
 import br.com.jbst.DTO.RelatorioFaturamentoPfDto;
 import br.com.jbst.DTO.RelatorioMatriculaDTO;
 import br.com.jbst.DTOs.GetFaturamentoDTO;
@@ -23,9 +25,12 @@ import br.com.jbst.DTOs.GetFaturamentopfDto;
 import br.com.jbst.DTOs.PostFaturamentoDTO;
 import br.com.jbst.DTOs.PostFaturamentopfDto;
 import br.com.jbst.DTOs.PutFaturamentopfDto;
+import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.FaturamentoPf;
 import br.com.jbst.entities.Matriculas;
+import br.com.jbst.entities.Turmas;
 import br.com.jbst.entities.map.Empresa;
+import br.com.jbst.entities.map.Funcionario;
 import br.com.jbst.entities.map.PessoaFisica;
 import br.com.jbst.repositories.FaturamentopfRepository;
 import br.com.jbst.repositories.PessoaFisicaRepository;
@@ -81,7 +86,6 @@ public class FaturamentopfServices {
             PessoaFisica pessoaFisica = pessoafisicaRepository.findById(dto.getIdpessoafisica())
                     .orElseThrow(() -> new RuntimeException("Pessoa Fisica não encontrada com o ID: " + dto.getIdpessoafisica()));
 
-            // Criar o objeto FaturamentoPf e atribuir a pessoa física
             FaturamentoPf faturamentoPf = new FaturamentoPf();
             faturamentoPf.setIdfaturamentopf(UUID.randomUUID());
             faturamentoPf.setDataHoraCriacao(Instant.now());
@@ -91,9 +95,19 @@ public class FaturamentopfServices {
             faturamentoPf.setFaturaFechada(false);
             faturamentoPf.setPessoaFisica(pessoaFisica);
             faturamentoPf.setVenda(dto.getVenda());
+            faturamentoPf.setNotafiscal(dto.getNotafiscal()); // Adicionado
+            faturamentoPf.setComprador(dto.getComprador()); // Adicionado
+            faturamentoPf.setTelefone(dto.getTelefone()); // Adicionado
+            faturamentoPf.setEmail(dto.getEmail()); // Adicionado
+            faturamentoPf.setResponsavelfinanceiro(dto.getResponsavelfinanceiro()); // Adicionado
+            faturamentoPf.setTelefonefinanceiro(dto.getTelefonefinanceiro()); // Adicionado
+            faturamentoPf.setWhatsapp(dto.getWhatsapp()); // Adicionado
+            faturamentoPf.setEmailfinanceiro(dto.getEmailfinanceiro()); // Adicionado
+            faturamentoPf.setData_de_pagamento(dto.getData_de_pagamento()); // Adicionado
+            faturamentoPf.setParcelas(dto.getParcelas()); // Adicionado
+            faturamentoPf.setForma_de_pagamento(dto.getForma_de_pagamento()); // Adicionado
             faturamentoPf.setObservacoes(dto.getObservacoes());
-            faturamentoPf.setTotal(null); // Ou defina um valor inicial, se necessário
-
+            faturamentoPf.setTotal(null);
             // Salvar o faturamento
             faturamentopfRepository.save(faturamentoPf);
 
@@ -106,8 +120,6 @@ public class FaturamentopfServices {
 
 
 private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInicio, Instant dataFim) {
-    // Consulta no banco de dados para verificar se já existe um faturamento
-    // no período daquele mês para a pessoa física
     return faturamentopfRepository.existsPessoaFisicaNoPeriodo(idPessoaFisica, dataInicio, dataFim);
 }
 
@@ -124,7 +136,6 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
 	UUID id = dto.getIdfaturamentopf();
 	FaturamentoPf faturamentopf = faturamentopfRepository.findById(id).orElseThrow();
 	modelMapper.map(dto, faturamentopf );
-	faturamentopf.setDataHoraCriacao(Instant.now());
 	faturamentopfRepository.save(faturamentopf);
 	return modelMapper.map(faturamentopf, GetFaturamentopfDto.class);
 			}
@@ -139,6 +150,10 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
 	        .map(this::mapFaturamentoToDTO)
 	        .collect(Collectors.toList());
 	}
+	
+	
+	 
+	    
 
     public GetFaturamentopfDto consultarUmFaturamento(UUID idFaturamento) throws Exception {
         Optional<FaturamentoPf> faturamentoOptional = faturamentopfRepository.findById(idFaturamento);
@@ -159,19 +174,28 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
         dto.setDataHoraCriacao(faturamento.getDataHoraCriacao());
         dto.setData_inicio(faturamento.getData_inicio());
         dto.setData_fim(faturamento.getData_fim());
+        dto.setVenda(faturamento.getVenda());
+        dto.setNotafiscal(faturamento.getNotafiscal());
+        dto.setValor(faturamento.getValor());
+        dto.setComprador(faturamento.getComprador());
+        dto.setTelefone(faturamento.getTelefone());
+        dto.setEmail(faturamento.getEmail());
+        dto.setResponsavelfinanceiro(faturamento.getResponsavelfinanceiro());
+        dto.setTelefonefinanceiro(faturamento.getTelefonefinanceiro());
+        dto.setWhatsapp(faturamento.getWhatsapp());
+        dto.setEmailfinanceiro(faturamento.getEmailfinanceiro());
+        dto.setData_de_pagamento(faturamento.getData_de_pagamento());
+        dto.setParcelas(faturamento.getParcelas());
+        dto.setForma_de_pagamento(faturamento.getForma_de_pagamento());
+        dto.setObservacoes(faturamento.getObservacoes());
+        dto.setPessoafisica(mapPessoaFisicaToDTO(faturamento.getPessoaFisica()));
         dto.setMatriculas(mapMatriculasToDTO(faturamento.getMatriculas()));
         dto.setTotal(faturamento.getTotal());
-        dto.setPessoafisica(mapPessoaFisicaToDTO(faturamento.getPessoaFisica()));
+        dto.setFaturaFechada(faturamento.isFaturaFechada());
         return dto;
     }
 
-    // Method to map Matriculas to DTO (Assuming you have a method mapMatriculasToDTO)
-    private List<RelatorioMatriculaDTO> mapMatriculasToDTO(List<Matriculas> matriculas) {
-		return null;
-        // Implement this method based on your requirements
-    }
 
-    // Method to map PessoaFisica to DTO
     private GetPessoaFisicaDTO mapPessoaFisicaToDTO(PessoaFisica pessoaFisica) {
     	
     	 if (pessoaFisica == null) {
@@ -189,9 +213,9 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
         pessoaFisicaDTO.setAssinatura_pessoafisica(pessoaFisica.getAssinaturaPessoaFisica());
         return pessoaFisicaDTO;
     }
-
-
     
+   
+
     public GetFaturamentopfDto excluirFaturamentopf(UUID id) throws Exception  {
 		Optional<FaturamentoPf> faturamentopf = faturamentopfRepository.findById(id);
 		if (faturamentopf.isEmpty())
@@ -206,28 +230,121 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
 
 	}
 
-    public  RelatorioFaturamentoPfDto calcularEAtualizarTotal(UUID idFaturamento) {
+    public RelatorioFaturamentoPfDto calcularEAtualizarTotal(UUID idFaturamento) {
         Optional<FaturamentoPf> faturamentoOptional = faturamentopfRepository.findById(idFaturamento);
 
         if (faturamentoOptional.isPresent()) {
-            FaturamentoPf faturamentopf = faturamentoOptional.get();
+            FaturamentoPf faturamentoPf = faturamentoOptional.get();
             BigDecimal totalValue = BigDecimal.ZERO;
 
-            if (faturamentopf.getMatriculas() != null && !faturamentopf.getMatriculas().isEmpty()) {
-                for (Matriculas matricula : faturamentopf.getMatriculas()) {
+            if (faturamentoPf.getMatriculas() != null && !faturamentoPf.getMatriculas().isEmpty()) {
+                for (Matriculas matricula : faturamentoPf.getMatriculas()) {
                     if (matricula.getValor() != null) {
                         totalValue = totalValue.add(matricula.getValor());
                     }
                 }
             }
 
-            faturamentopf.setTotal(totalValue);
-            faturamentopfRepository.save(faturamentopf);
+            faturamentoPf.setTotal(totalValue);
 
-            return modelMapper.map(faturamentopf, RelatorioFaturamentoPfDto.class);
+            // Mapear a PessoaFisica associada
+            GetPessoaFisicaDTO pessoaFisicaDTO = mapPessoaFisicaToDTO(faturamentoPf.getPessoaFisica());
+            
+            // Adicionar a DTO da PessoaFisica ao RelatorioFaturamentoPfDto
+            RelatorioFaturamentoPfDto relatorioFaturamentoPfDto = modelMapper.map(faturamentoPf, RelatorioFaturamentoPfDto.class);
+            relatorioFaturamentoPfDto.setPessoafisica(pessoaFisicaDTO);
+
+            faturamentopfRepository.save(faturamentoPf);
+
+            return relatorioFaturamentoPfDto;
         } else {
             throw new RuntimeException("Faturamento não encontrado");
         }
+    }
+
+    
+    @Transactional
+    public void fecharFaturaManualmente(UUID idFaturamento) {
+        FaturamentoPf faturamento = faturamentopfRepository.findById(idFaturamento)
+                .orElseThrow(() -> new RuntimeException("Faturamento não encontrado com o ID: " + idFaturamento));
+
+        // Carregue a PessoaFisica associada ao faturamento
+        PessoaFisica pessoaFisica = faturamento.getPessoaFisica();
+        if (pessoaFisica == null) {
+            throw new RuntimeException("A fatura não tem uma Pessoa Fisica associada.");
+        }
+
+        faturamento.setFaturaFechada(true);
+
+        // Atualize a entidade no repositório
+        faturamentopfRepository.save(faturamento);
+
+        // Outras operações relacionadas, se necessário...
+    }
+    
+
+    @Transactional
+    public void reabrirFatura(UUID idFaturamento) {
+        FaturamentoPf faturamento = faturamentopfRepository.findById(idFaturamento)
+                .orElseThrow(() -> new RuntimeException("Faturamento não encontrado com o ID: " + idFaturamento));
+
+        if (!faturamento.isFaturaFechada()) {
+            throw new IllegalStateException("A fatura não está fechada para reabrir.");
+        }
+
+        faturamento.setFaturaFechada(false);
+
+        // Atualize outras propriedades ou execute ações necessárias ao reabrir a fatura
+
+        faturamentopfRepository.save(faturamento);
+    }
+    
+
+    private List<RelatorioMatriculaDTO> mapMatriculasToDTO(List<Matriculas> matriculas) {
+        return matriculas.stream()
+                .map(this::mapMatriculaToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private RelatorioMatriculaDTO mapMatriculaToDTO(Matriculas matricula) {
+        RelatorioMatriculaDTO dto = new RelatorioMatriculaDTO();
+        dto.setNumeroMatricula(matricula.getNumeroMatricula());
+        dto.setValor(matricula.getValor());
+        dto.setVenda(matricula.getVenda());
+        dto.setStatus(matricula.getStatus());
+
+        // Mapear a PessoaFisica associada
+        GetPessoaFisicaDTO pessoaFisicaDTO = mapPessoaFisicaToDTO(matricula.getPessoafisica());
+        dto.setPessoafisica(pessoaFisicaDTO);
+
+        // Se houver uma entidade Funcionario associada, mapeie também
+        if (matricula.getFuncionario() != null) {
+            GetFuncionarioDTO funcionarioDTO = mapFuncionarioToDTO(matricula.getFuncionario());
+            dto.setFuncionario(funcionarioDTO);
+        }
+
+        // Se houver uma entidade Turmas associada, mapeie também
+        if (matricula.getTurmas() != null) {
+            GetTurmasDTO turmasDTO = mapTurmasToDTO(matricula.getTurmas());
+            dto.setTurmas(turmasDTO);
+        }
+
+        return dto;
+    }
+
+
+    private GetTurmasDTO mapTurmasToDTO(Turmas turmas) {
+        ModelMapper modelMapper = new ModelMapper();
+        GetTurmasDTO turmasDTO = modelMapper.map(turmas, GetTurmasDTO.class);
+        return turmasDTO;
+    }
+
+
+
+    private GetFuncionarioDTO mapFuncionarioToDTO(Funcionario funcionario) {
+        ModelMapper modelMapper = new ModelMapper();
+        GetFuncionarioDTO funcionarioDTO = modelMapper.map(funcionario, GetFuncionarioDTO.class);
+        return funcionarioDTO;
     }
 
 }

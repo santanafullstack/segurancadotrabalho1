@@ -12,6 +12,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import br.com.jbst.DTO.GetTurmasDTO;
 import br.com.jbst.DTO.GetTurmasDTOs;
@@ -19,6 +20,7 @@ import br.com.jbst.DTO.PostTurmasDTO;
 import br.com.jbst.DTO.PutTurmasDTO;
 import br.com.jbst.DTO.PutTurmasInstrutor;
 import br.com.jbst.entities.Instrutor;
+import br.com.jbst.entities.Matriculas;
 import br.com.jbst.entities.Turmas;
 import br.com.jbst.repositories.CursoRepository;
 import br.com.jbst.repositories.InstrutorRepository;
@@ -166,6 +168,22 @@ public GetTurmasDTO excluirInstrutor(UUID idTurmas, UUID idInstrutor) throws Acc
     turmasRepository.save(turmas);
 
     return modelMapper.map(turmas, GetTurmasDTO.class);
+}
+
+
+
+@Transactional
+public void turmaAberta(UUID turmaId) {
+    Turmas turma = turmasRepository.findById(turmaId).orElseThrow(() -> new RuntimeException("Turma não encontrada"));
+    turma.turmaAberta();
+    turmasRepository.save(turma);
+}
+
+@Transactional
+public void turmaFechada(UUID turmaId) {
+    Turmas turma = turmasRepository.findById(turmaId).orElseThrow(() -> new RuntimeException("Turma não encontrada"));
+    turma.turmaFechada();
+    turmasRepository.save(turma);
 }
 
 

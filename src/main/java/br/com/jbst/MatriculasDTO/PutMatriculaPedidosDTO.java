@@ -9,11 +9,12 @@ import lombok.Data;
 public class PutMatriculaPedidosDTO {
 	private UUID idMatricula;
 	private UUID idTurmas;
-	private UUID idFuncionario;
-	private UUID idPedidos;
 	private String venda;
 	private BigDecimal valor;
 	private String status;
 	private String tipo_de_pagamento;
+	private String observacoes;
+	
+
 
 }
