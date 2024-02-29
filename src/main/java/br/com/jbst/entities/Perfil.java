@@ -12,9 +12,13 @@ import lombok.Data;
 @Table(name = "perfil")
 @Data
 public class Perfil {
+	
+	// Campo 1
 	@Id
 	@Column(name = "id")
 	private UUID id;
+	
+	// Campo 2
 	@Column(name = "nome", length = 50, nullable = false, unique = true)
 	private String nome;
 	

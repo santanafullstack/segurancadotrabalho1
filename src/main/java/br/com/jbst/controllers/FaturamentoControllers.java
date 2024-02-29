@@ -92,4 +92,22 @@ public class FaturamentoControllers {
 	                    .body("Erro ao abrir manualmente a fatura: " + e.getMessage());
 	        }
 	    }
+	    
+	 
+	    
+	    @GetMapping("/api/faturamentos-em-aberto/usuario/{idUsuario}")
+	    public ResponseEntity<List<GetFaturamentoDTO>> buscarFaturamentosPorIdUsuariofaturaAberta(@PathVariable UUID idUsuario) {
+	        List<GetFaturamentoDTO> faturamentos = faturamentoService.buscarFaturamentosPorIdUsuarioFaturaAberta(idUsuario);
+	        if (faturamentos.isEmpty()) {
+	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	        }
+	        return new ResponseEntity<>(faturamentos, HttpStatus.OK);
+	    }
+	    
+	    
+	    @GetMapping("/api/faturamentos/{idUsuario}/{mes}/{ano}")
+	    public List<GetFaturamentoDTO> buscarFaturamentosPorIdUsuarioEMesEAno(
+	            @PathVariable UUID idUsuario, @PathVariable int mes, @PathVariable int ano) {
+	        return faturamentoService.buscarFaturamentosPorIdUsuario(idUsuario, mes, ano);
+	    }
 	}

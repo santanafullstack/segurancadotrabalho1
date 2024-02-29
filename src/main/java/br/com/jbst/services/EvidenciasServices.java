@@ -89,7 +89,7 @@ public class EvidenciasServices {
 		Evidencias evidencias = registro.get();
 		evidenciasRepository.delete(evidencias);
 		GetEvidenciasDTOs dto = modelMapper.map(evidencias, GetEvidenciasDTOs.class);
-		dto.getEvidencias();
+		dto.getNome();
 	    return dto;
 
 	}  

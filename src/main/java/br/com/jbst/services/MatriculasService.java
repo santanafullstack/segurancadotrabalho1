@@ -30,6 +30,7 @@ import br.com.jbst.MatriculasDTO.GetMatriculaPedidosDTO;
 import br.com.jbst.MatriculasDTO.PostMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.PostMatriculaFaturamentoPjDTO;
 import br.com.jbst.MatriculasDTO.PostMatriculaPedidosDTO;
+import br.com.jbst.MatriculasDTO.PutMatriculaCliente;
 import br.com.jbst.MatriculasDTO.PutMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.PutMatriculaFaturamentoPjDTO;
 import br.com.jbst.MatriculasDTO.PutMatriculaPedidosDTO;
@@ -597,5 +598,28 @@ public class MatriculasService {
 	        throw new Exception("Erro ao excluir usuários da Matricula.", ex);
 	    }
 	}
+	
+	
+	// Edição Cliente
+		public PutMatriculaCliente editarMatriculaCliente(PutMatriculaCliente dto) throws Exception {	
+			try {
+			Optional<Matriculas> registro = matriculasRepository.findById(dto.getIdMatricula());
+			if (registro.isEmpty()) {
+				throw new IllegalArgumentException("Matrícula inválida: " + dto.getIdMatricula());
+			}
+			Matriculas matriculas = registro.get();
+			modelMapper.map(dto, matriculas); // Utiliza o ModelMapper para mapear os dados do DTO para a entidade
+			matriculasRepository.save(matriculas);
+			return modelMapper.map(matriculas,  PutMatriculaCliente.class);
+		
+			} catch (NoSuchElementException e) {
+			    logger.error("Elemento não encontrado: {}", e.getMessage(), e);
+			    throw new NotFoundException();
+			} catch (Exception e) {
+			    logger.error("Erro ao editar matrícula: {}", e.getMessage(), e);
+			    throw new RuntimeException("Erro ao editar matrícula: " + e.getMessage(), e);
+			   }
+			
+			}
 
 }

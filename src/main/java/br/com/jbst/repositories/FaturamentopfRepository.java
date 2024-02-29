@@ -1,7 +1,7 @@
 package br.com.jbst.repositories;
 
 import java.time.Instant;
-
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.FaturamentoPf;
 
 public interface FaturamentopfRepository extends JpaRepository<FaturamentoPf, UUID> {
@@ -29,5 +30,5 @@ public interface FaturamentopfRepository extends JpaRepository<FaturamentoPf, UU
     
     
     
-   
+
 }

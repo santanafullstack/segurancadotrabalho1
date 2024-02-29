@@ -20,6 +20,7 @@ import br.com.jbst.DTO.GetPedidosDTO;
 import br.com.jbst.DTO.PostPedidosDTO;
 import br.com.jbst.DTO.PutPedidosDTO;
 import br.com.jbst.DTO.RelatorioPedidosDTO;
+import br.com.jbst.DTOs.GetFaturamentoDTO;
 import br.com.jbst.entities.Pedidos;
 import br.com.jbst.services.PedidosService;
 
@@ -99,8 +100,44 @@ public class PedidosController {
 	        }
 	    }
 
-  
-
+	    
+	    @GetMapping("/api/pedidos-fechado/usuario/{idUsuario}")
+	    public ResponseEntity<List<GetPedidosDTO>> buscarPedidosPorIdUsuarioFechado(@PathVariable UUID idUsuario) {
+	        List<GetPedidosDTO> pedidos = pedidosService.buscarPedidosPorIdUsuarioFechado(idUsuario);
+	        if (pedidos.isEmpty()) {
+	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	        }
+	        return new ResponseEntity<>(pedidos, HttpStatus.OK);
+	    }
+	    
+	    
+	    @GetMapping("/api/pedidos-aberto/usuario/{idUsuario}")
+	    public ResponseEntity<List<GetPedidosDTO>> buscarPedidosPorIdUsuarioAbertos(@PathVariable UUID idUsuario) {
+	        List<GetPedidosDTO> pedidos = pedidosService.buscarPedidosPorIdUsuarioAbertos(idUsuario);
+	        if (pedidos.isEmpty()) {
+	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	        }
+	        return new ResponseEntity<>(pedidos, HttpStatus.OK);
+	    }
+	    
+	    @GetMapping("/api/todos-pedidos-por-usuario/usuario/{idUsuario}")
+	    public ResponseEntity<List<GetPedidosDTO>> buscarPedidosPorIdUsuario(@PathVariable UUID idUsuario) {
+	        List<GetPedidosDTO> pedidos = pedidosService.buscarPedidosPorIdUsuario(idUsuario);
+	        if (pedidos.isEmpty()) {
+	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	        }
+	        return new ResponseEntity<>(pedidos, HttpStatus.OK);
+	    }
+	    
+	    @GetMapping("/usuario/{idUsuario}/{mes}/{ano}")
+	    public ResponseEntity<List<GetPedidosDTO>> buscarPedidosPorIdUsuarioMesAno(
+	            @PathVariable UUID idUsuario, @PathVariable int mes, @PathVariable int ano) {
+	        List<GetPedidosDTO> pedidos = pedidosService.buscarPedidosPorIdUsuario(idUsuario, mes, ano);
+	        if (pedidos.isEmpty()) {
+	            return ResponseEntity.noContent().build();
+	        }
+	        return ResponseEntity.ok(pedidos);
+	    }
 	}
 
 

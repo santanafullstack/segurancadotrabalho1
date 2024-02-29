@@ -19,13 +19,10 @@ public class GetFaturamentoDTO {
 
 	@JsonSerialize(using = InstantSerializer.class)
     private Instant dataHoraCriacao;
-
 	@JsonSerialize(using = InstantSerializer.class)
 	private Instant data_inicio;
-	
 	@JsonSerialize(using = InstantSerializer.class)
     private Instant	 data_fim;
-	
     private List<RelatorioMatriculaDTO> matriculas;
    	private BigDecimal total;
     private String venda;

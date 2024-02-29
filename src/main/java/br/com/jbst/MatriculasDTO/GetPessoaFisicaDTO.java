@@ -16,7 +16,7 @@ public class GetPessoaFisicaDTO {
 	private String telefone_1;
 	private String telefone_2;
 	private String email;
-	private byte[] assinatura_pessoafisica;
+	private byte[] assinaturaPessoaFisica;
 
 	public void setNome(Object nome) {
 		// TODO Auto-generated method stub

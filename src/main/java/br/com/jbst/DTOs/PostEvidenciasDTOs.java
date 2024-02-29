@@ -9,7 +9,7 @@ import lombok.Data;
 public class PostEvidenciasDTOs {
 
 	private UUID idMatricula;
-	private String evidencias;
+	private String nome;
 	private String descricao;	
 
 

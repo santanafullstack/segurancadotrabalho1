@@ -2,6 +2,8 @@ package br.com.jbst.services;
 import java.math.BigDecimal;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +19,8 @@ import br.com.jbst.DTO.GetPedidosDTO;
 import br.com.jbst.DTO.PostPedidosDTO;
 import br.com.jbst.DTO.PutPedidosDTO;
 import br.com.jbst.DTO.RelatorioPedidosDTO;
+import br.com.jbst.DTOs.GetFaturamentoDTO;
+import br.com.jbst.entities.Faturamento;
 import br.com.jbst.entities.Matriculas;
 import br.com.jbst.entities.Pedidos;
 import br.com.jbst.entities.map.Empresa;
@@ -169,6 +173,66 @@ public class PedidosService {
         // Atualize outras propriedades ou execute ações necessárias ao reabrir o pedido
 
         pedidosRepository.save(pedido);
+    }
+    
+    
+    
+    public List<GetPedidosDTO> buscarPedidosPorIdUsuarioFechado(UUID idUsuario) {
+        List<GetPedidosDTO> pedidosDTO = new ArrayList<>();
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        for (Empresa empresa : empresas) {
+            List<Pedidos> pedidos = empresa.getPedidos();
+            for (Pedidos pedido : pedidos) {
+                if (pedido.isPedidoFechado()) { // Verifica se a fatura está aberta
+                    GetPedidosDTO pedidos1DTO = modelMapper.map(pedido, GetPedidosDTO.class);
+                    // Mapeie outros dados do faturamento, se necessário
+                    pedidosDTO.add(pedidos1DTO);
+                }
+            }
+        }
+        return pedidosDTO;
+    }
+
+
+    public List<GetPedidosDTO> buscarPedidosPorIdUsuarioAbertos(UUID idUsuario) {
+        List<GetPedidosDTO> pedidosDTO = new ArrayList<>();
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        for (Empresa empresa : empresas) {
+            List<Pedidos> pedidos = empresa.getPedidos();
+            for (Pedidos pedido : pedidos) {
+                if (!pedido.isPedidoFechado()) { // Verifica se o pedido está aberto
+                    GetPedidosDTO pedidoDTO = modelMapper.map(pedido, GetPedidosDTO.class);
+                    // Mapeie outros dados do pedido, se necessário
+                    pedidosDTO.add(pedidoDTO);
+                }
+            }
+        }
+        return pedidosDTO;
+    }
+
+ 
+    public List<GetPedidosDTO> buscarPedidosPorIdUsuario(UUID idUsuario) {
+        List<GetPedidosDTO> pedidosDTO = new ArrayList<>();
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        return pedidosDTO;
+    }
+    
+    public List<GetPedidosDTO> buscarPedidosPorIdUsuario(UUID idUsuario, int mes, int ano) {
+        List<GetPedidosDTO> pedidosDTO = new ArrayList<>();
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        for (Empresa empresa : empresas) {
+            List<Pedidos> pedidos = empresa.getPedidos();
+            for (Pedidos pedido : pedidos) {
+                Instant dataHoraCriacao = pedido.getDataHoraCriacao();
+                int pedidoMes = dataHoraCriacao.atZone(ZoneId.systemDefault()).getMonthValue();
+                int pedidoAno = dataHoraCriacao.atZone(ZoneId.systemDefault()).getYear();
+                if (pedidoMes == mes && pedidoAno == ano) {
+                    GetPedidosDTO pedidoDTO = modelMapper.map(pedido, GetPedidosDTO.class);
+                    pedidosDTO.add(pedidoDTO);
+                }
+            }
+        }
+        return pedidosDTO;
     }
 
     }

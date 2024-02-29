@@ -20,5 +20,10 @@ public class GetCursoDTO {
 	private String itemdaautorizacao;
 	private String conteudodaautorizacao;
 	private String conformidade;
+	private String valorFormacao;
+	private String valorReciclagem;
+	private String composicaoOrcamentaria;
+	private String observacoesGerais;
+	private String valorEad;
 
 }

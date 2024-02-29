@@ -2,6 +2,7 @@ package br.com.jbst.DTO;
 
 import java.time.Instant;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
@@ -18,5 +19,10 @@ public class PostCursoDTO {
 	private String itemdaautorizacao;
 	private String conteudodaautorizacao;
 	private String conformidade;
+	private String valorFormacao;
+	private String valorReciclagem;
+	private String composicaoOrcamentaria;
+	private String observacoesGerais;
+	private String valorEad;
 
 }

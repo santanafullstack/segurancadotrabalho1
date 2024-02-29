@@ -22,20 +22,25 @@ import lombok.Data;
 @Table(name = "unidadedetreinamento")
 public class UnidadeDeTreinamento {
 
+	// Campo 1
     @Id
     @Column(name = "idUnidadedetreinamento")
     private UUID idUnidadedetreinamento;
 
+	// Campo 2
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "datahoracriacao", nullable = false) 
     private Instant dataHoraCriacao;
 
+	// Campo 3
     @Column(name = "unidadedetreinamento", length = 100, nullable = false)
     private String unidadedetreinamento;
 
+	// Campo 4
     @Column(name = "cnpj", length = 100, nullable = false)
     private String cnpj;
 
+	// Campo 5
     @Column(name = "unidade", length = 200, nullable = false)
     private String unidade;
     

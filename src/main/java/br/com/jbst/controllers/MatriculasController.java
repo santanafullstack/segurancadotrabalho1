@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.hibernate.boot.MappingNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,6 +32,7 @@ import br.com.jbst.MatriculasDTO.GetMatriculaPedidosDTO;
 import br.com.jbst.MatriculasDTO.PostMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.PostMatriculaFaturamentoPjDTO;
 import br.com.jbst.MatriculasDTO.PostMatriculaPedidosDTO;
+import br.com.jbst.MatriculasDTO.PutMatriculaCliente;
 import br.com.jbst.MatriculasDTO.PutMatriculaFaturamentoPfDTO;
 import br.com.jbst.MatriculasDTO.PutMatriculaFaturamentoPjDTO;
 import br.com.jbst.MatriculasDTO.PutMatriculaPedidosDTO;
@@ -138,6 +140,23 @@ public class MatriculasController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir usuário da matrícula: " + e.getMessage());
 	    }
 	}
+	
+	
+	
+	@PutMapping("/editar-matriculas-cliente")
+    public ResponseEntity<PutMatriculaCliente> editarMatricula(@RequestBody PutMatriculaCliente dto) {
+        try {
+            PutMatriculaCliente matriculaAtualizada = matriculaService.editarMatriculaCliente(dto);
+            return ResponseEntity.ok(matriculaAtualizada);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+	
 
 	    } 
 

@@ -1,6 +1,7 @@
 package br.com.jbst.repositories;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import br.com.jbst.entities.Faturamento;
 
@@ -27,4 +28,7 @@ public interface FaturamentoRepository extends JpaRepository<Faturamento, UUID >
 	 
 	@Query("SELECT MAX(f.numeroFaturamento) FROM Faturamento f")
     Integer findMaxNumeroFaturamento();
+	
+    List<Faturamento> findByEmpresa_Usuario_Id(UUID idUsuario);
+
 }

@@ -17,6 +17,7 @@ public class PostTurmasDTO {
 	private String  cargahoraria;
 	private String modalidade;
 	private String status;
+	private String instrutor;
 	private String descricao;
 	private String diasespecificos;
 	private String tipo;
@@ -25,6 +26,7 @@ public class PostTurmasDTO {
 	private String dia;
 	private String mes;
 	private String ano;
+	private String observacoes;
 	private String primeirodia;
 	private String segundodia;
 	private String terceirodia;

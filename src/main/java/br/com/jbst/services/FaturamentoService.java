@@ -1,6 +1,8 @@
 package br.com.jbst.services;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.YearMonth;
@@ -10,6 +12,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,6 +228,70 @@ public class FaturamentoService {
 
         faturamentoRepository.save(faturamento);
     }
+    
+    public List<GetFaturamentoDTO> buscarFaturamentosPorIdUsuario(UUID idUsuario, int mes, int ano) {
+        List<GetFaturamentoDTO> faturamentosDTO = new ArrayList<>();
+
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        for (Empresa empresa : empresas) {
+            List<Faturamento> faturamentos = empresa.getFaturamentos();
+            for (Faturamento faturamento : faturamentos) {
+                Instant dataInicio = faturamento.getData_inicio();
+                Instant dataFim = faturamento.getData_fim();
+
+                // Extrair mês e ano da data de início do faturamento
+                int mesFaturamento = dataInicio.atZone(ZoneId.systemDefault()).getMonthValue();
+                int anoFaturamento = dataInicio.atZone(ZoneId.systemDefault()).getYear();
+
+                // Verificar se o faturamento está no mês e ano especificados
+                if (mesFaturamento == mes && anoFaturamento == ano) {
+                    GetFaturamentoDTO faturamentoDTO = modelMapper.map(faturamento, GetFaturamentoDTO.class);
+                    // Mapeie outros dados do faturamento, se necessário
+                    faturamentosDTO.add(faturamentoDTO);
+                }
+            }
+        }
+
+        return faturamentosDTO;
+    }
+    
+    public List<GetFaturamentoDTO> buscarFaturamentosPorIdUsuarioEmAberto(UUID idUsuario) {
+        List<GetFaturamentoDTO> faturamentosDTO = new ArrayList<>();
+
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        for (Empresa empresa : empresas) {
+            List<Faturamento> faturamentos = empresa.getFaturamentos();
+            for (Faturamento faturamento : faturamentos) {
+                if (faturamento.isFaturaAberta()) { // Verifica se a fatura está aberta
+                    GetFaturamentoDTO faturamentoDTO = modelMapper.map(faturamento, GetFaturamentoDTO.class);
+                    // Mapeie outros dados do faturamento, se necessário
+                    faturamentosDTO.add(faturamentoDTO);
+                }
+            }
+        }
+
+        return faturamentosDTO;
+    }
+
+  
+    public List<GetFaturamentoDTO> buscarFaturamentosPorIdUsuarioFaturaAberta(UUID idUsuario) {
+        List<GetFaturamentoDTO> faturamentosDTO = new ArrayList<>();
+
+        List<Empresa> empresas = empresaRepository.findByUsuario_Id(idUsuario);
+        for (Empresa empresa : empresas) {
+            List<Faturamento> faturamentos = empresa.getFaturamentos();
+            for (Faturamento faturamento : faturamentos) {
+                if (faturamento.isFaturaAberta() && !faturamento.isFaturaFechada()) {
+                    GetFaturamentoDTO faturamentoDTO = modelMapper.map(faturamento, GetFaturamentoDTO.class);
+                    // Mapeie outros dados do faturamento, se necessário
+                    faturamentosDTO.add(faturamentoDTO);
+                }
+            }
+        }
+
+        return faturamentosDTO;
+    }
+    
 }
 
 

@@ -14,7 +14,6 @@ import lombok.Data;
 public class GetTurmasDTO {
 
 	private UUID idTurmas;
-	
 	@JsonSerialize(using = InstantSerializer.class)
 	private Instant dataHoraCriacao;
 	private Integer numeroTurma;
@@ -25,6 +24,7 @@ public class GetTurmasDTO {
 	private String  cargahoraria;
 	private String modalidade;
 	private String status;
+	private String instrutor;
 	private String nivel;
 	private String descricao;
 	private String diasespecificos;
@@ -39,6 +39,7 @@ public class GetTurmasDTO {
 	private String terceirodia;
 	private String quartodia;
 	private String quintodia;
+	private String observacoes;
 	private GetCursoDTO curso;
 	private GetUnidadeDeTreinamentoDTO unidadeDeTreinamento;
 	private List<GetInstrutorDTO> instrutores;

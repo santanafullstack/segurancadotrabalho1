@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -107,6 +108,7 @@ public class FaturamentopfServices {
             faturamentoPf.setParcelas(dto.getParcelas()); // Adicionado
             faturamentoPf.setForma_de_pagamento(dto.getForma_de_pagamento()); // Adicionado
             faturamentoPf.setObservacoes(dto.getObservacoes());
+            faturamentoPf.setValor(dto.getValor());
             faturamentoPf.setTotal(null);
             // Salvar o faturamento
             faturamentopfRepository.save(faturamentoPf);
@@ -210,7 +212,7 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
         pessoaFisicaDTO.setTelefone_1(pessoaFisica.getTelefone1());
         pessoaFisicaDTO.setTelefone_2(pessoaFisica.getTelefone1());
         pessoaFisicaDTO.setEmail(pessoaFisica.getEmail());
-        pessoaFisicaDTO.setAssinatura_pessoafisica(pessoaFisica.getAssinaturaPessoaFisica());
+        pessoaFisicaDTO.setAssinaturaPessoaFisica(pessoaFisica.getAssinaturaPessoaFisica());
         return pessoaFisicaDTO;
     }
     
@@ -338,15 +340,17 @@ private boolean existsFaturamentoNoPeriodo(UUID idPessoaFisica, Instant dataInic
         GetTurmasDTO turmasDTO = modelMapper.map(turmas, GetTurmasDTO.class);
         return turmasDTO;
     }
-
-
-
     private GetFuncionarioDTO mapFuncionarioToDTO(Funcionario funcionario) {
         ModelMapper modelMapper = new ModelMapper();
         GetFuncionarioDTO funcionarioDTO = modelMapper.map(funcionario, GetFuncionarioDTO.class);
         return funcionarioDTO;
     }
+    
+  
 
 }
+
+
+
 
 

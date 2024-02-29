@@ -11,7 +11,7 @@ public class GetEvidenciasDTOs {
 	private UUID idMatricula;
 	private UUID idEvidencias;
 	private Instant dataHoraCriacao;
-	private String evidencias;
+	private String nome;
 	private String descricao;	
 	private byte[] inserir_evidencias;
 }
